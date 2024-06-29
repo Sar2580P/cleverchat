@@ -9,6 +9,22 @@ type Chat = {
   }[];
 }[];
 
+interface Option {
+  id: string;
+  option: string;
+}
+interface Question {
+  question: string;
+  type: "text" | "single" | "multi";
+  options?: Option[];
+  id: string;
+}
+interface Answer {
+  questionId: string;
+  type: "text" | "single" | "multi";
+  answer: string | string[];
+}
+
 type AppContextType = {
   links: string[];
   link: string;
@@ -22,6 +38,15 @@ type AppContextType = {
   onConverseAiChats: (chat: Chat) => void;
   currentQuestion: string;
   setCurrentQuestion: (question: string) => void;
+
+  evaluateAiQuestions: Question[];
+  onEvaluateAiQuestions: (questions: Question[]) => void;
+  evaluateAiAnswers: Answer[];
+  onEvaluateAiAnswers: (
+    questionId: string,
+    optionValue: string,
+    type: "text" | "single" | "multi"
+  ) => void;
 };
 
 const AppContext = React.createContext<AppContextType>({
@@ -36,6 +61,10 @@ const AppContext = React.createContext<AppContextType>({
   onConverseAiChats: () => {},
   currentQuestion: "",
   setCurrentQuestion: () => {},
+  evaluateAiQuestions: [],
+  onEvaluateAiQuestions: () => {},
+  evaluateAiAnswers: [],
+  onEvaluateAiAnswers: () => {},
 });
 
 type Props = {
@@ -81,6 +110,44 @@ export const AppContextProvider: React.FC<Props> = (props) => {
   };
   const [currentQuestion, setCurrentQuestion] = useState<string>("");
 
+  // CODE PERSONALIZED AI ASSESSMENTS PAGE
+  const [evaluateAiQuestions, setEvaluateAiQuestions] = useState<Question[]>(
+    []
+  );
+  const onEvaluateAiQuestions = (questions: Question[]) => {
+    setEvaluateAiQuestions(questions);
+    const initialAnswers = questions.map((q) => ({
+      questionId: q.id,
+      type: q.type,
+      answer: q.type === "multi" ? [] : "",
+    }));
+    setEvaluateAiAnswers(initialAnswers);
+  };
+  const [evaluateAiAnswers, setEvaluateAiAnswers] = useState<Answer[]>([]);
+  const onEvaluateAiAnswers = (
+    questionId: string,
+    optionValue: string,
+    type: "text" | "single" | "multi"
+  ) => {
+    setEvaluateAiAnswers((prevAnswers) =>
+      prevAnswers.map((ans) =>
+        ans.questionId === questionId
+          ? {
+              ...ans,
+              answer:
+                type === "multi"
+                  ? Array.isArray(ans.answer)
+                    ? ans.answer.includes(optionValue)
+                      ? ans.answer.filter((a) => a !== optionValue)
+                      : [...ans.answer, optionValue]
+                    : [optionValue]
+                  : optionValue,
+            }
+          : ans
+      )
+    );
+  };
+
   useEffect(() => {
     const loadLinks = () => {
       if (typeof window !== "undefined") {
@@ -112,6 +179,10 @@ export const AppContextProvider: React.FC<Props> = (props) => {
         onConverseAiChats,
         currentQuestion,
         setCurrentQuestion,
+        evaluateAiQuestions,
+        onEvaluateAiQuestions,
+        evaluateAiAnswers,
+        onEvaluateAiAnswers,
       }}
     >
       {props.children}

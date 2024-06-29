@@ -1,7 +1,7 @@
 import classes from "@/styles/insight_ai.module.css";
 import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
 
-export default function insight_ai() {
+export default function InsightAi() {
   return (
     <div className={classes.container}>
       <div className={classes.box}>

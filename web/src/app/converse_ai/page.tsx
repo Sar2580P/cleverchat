@@ -6,7 +6,7 @@ import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
 import AppContext from "@/contexts/AppContext";
 import Chat from "@/components/Chat/Chat";
 
-export default function converse_ai() {
+export default function ConverseAi() {
   const appCtx = useContext(AppContext);
 
   return (

@@ -32,7 +32,6 @@ const Notification: React.FC<Props> = (props) => {
         return prev;
       });
     }, 20);
-    console.log(id);
     setIntervalId(id as unknown as number);
   };
   const handlePauseTimer = () => {

@@ -17,7 +17,6 @@ const CustomBotChat: React.FC<Chat> = ({ data }) => {
 
   useEffect(() => {
     if (chatsRef.current) {
-      console.log(chatsRef.current.scrollHeight);
       chatsRef.current.scrollTop = chatsRef.current.scrollHeight;
     }
   }, [data]);
