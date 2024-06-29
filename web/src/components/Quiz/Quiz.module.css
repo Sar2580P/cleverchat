@@ -1,0 +1,68 @@
+.quiz-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  gap: 1.25rem;
+  padding: 30px;
+  margin: auto;
+  width: min(80vw, 650px);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 60vh;
+  overflow-y: scroll;
+}
+
+.question {
+  width: -webkit-fill-available;
+  padding: 20px;
+  background-color: var(--white-color);
+  border: 1px solid #f9f9f9;
+  border: none;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px #e0e0e0;
+}
+
+.question h2 {
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.question div {
+  margin-bottom: 10px;
+}
+
+.question input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.question input[type="radio"],
+.question input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: #007bff;
+}
+
+.question input[type="radio"]:hover,
+.question input[type="checkbox"]:hover {
+  cursor: pointer;
+}
+
+.question label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+  cursor: pointer;
+}
+
+.question label:hover {
+  color: #007bff;
+}
