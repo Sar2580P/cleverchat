@@ -5,6 +5,7 @@ body {
   margin: auto;
   position: relative;
   scroll-behavior: smooth;
+  background-color: var(--light-white-color);
 }
 a {
   display: block;
@@ -52,6 +53,9 @@ a {
   --dark-icons-color: #1877f2;
 
   --yellow-color: #f5a623;
+
+  /* --clr: #0ff0fc; */
+  --clr: rgb(62, 205, 213);
 
   /* FONT SIZE */
   --ft-100: 0.5rem;

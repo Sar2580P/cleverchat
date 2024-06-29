@@ -60,6 +60,7 @@ const Header = () => {
 
   useEffect(() => {
     if (currentPath == "/") {
+      handleNavLinkClick(0);
       return;
     }
     const currentIndex = NavBarContentLink.findIndex(

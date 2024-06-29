@@ -1,9 +1,12 @@
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 5rem);
+  padding-top: 5rem;
+  width: -webkit-fill-available;
+  position: relative;
 }
 
 .box {
@@ -11,5 +14,5 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: black;
+  width: -webkit-fill-available;
 }
