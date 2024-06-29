@@ -20,6 +20,7 @@ export default function AddLinks() {
     <div className={classes.container}>
       <div className={classes.inputSection}>
         <input
+          autoFocus
           type="text"
           value={appCtx.link}
           onChange={(e) => appCtx.onLink(e.target.value)}

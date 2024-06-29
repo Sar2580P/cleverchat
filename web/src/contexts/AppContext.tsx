@@ -2,12 +2,26 @@
 import React, { useState, useEffect } from "react";
 import { useNotification } from "@/hooks/useNotification";
 
+type Chat = {
+  role: string;
+  parts: {
+    text: string;
+  }[];
+}[];
+
 type AppContextType = {
   links: string[];
   link: string;
   onLinks: (link: string) => void;
   onLink: (link: string) => void;
   onDelete: (link: string) => void;
+
+  converseAiMarkdown: string;
+  onConverseAiMarkdown: (markdown: string) => void;
+  converseAiChats: Chat;
+  onConverseAiChats: (chat: Chat) => void;
+  currentQuestion: string;
+  setCurrentQuestion: (question: string) => void;
 };
 
 const AppContext = React.createContext<AppContextType>({
@@ -16,6 +30,12 @@ const AppContext = React.createContext<AppContextType>({
   onLinks: () => {},
   onLink: () => {},
   onDelete: () => {},
+  converseAiMarkdown: "",
+  onConverseAiMarkdown: () => {},
+  converseAiChats: [],
+  onConverseAiChats: () => {},
+  currentQuestion: "",
+  setCurrentQuestion: () => {},
 });
 
 type Props = {
@@ -49,12 +69,29 @@ export const AppContextProvider: React.FC<Props> = (props) => {
     );
   };
 
+  // CODE INTELLIGENT AI CHATBOT PAGE
+  const [converseAiMarkdown, setConverseAiMarkdown] = useState("");
+  const onConverseAiMarkdown = (markdown: string) => {
+    setConverseAiMarkdown(markdown);
+    localStorage.setItem("clever_chat_markdown", markdown);
+  };
+  const [converseAiChats, setConverseAiChats] = useState<Chat>([]);
+  const onConverseAiChats = (chat: Chat) => {
+    setConverseAiChats((prev) => [...prev, ...chat]);
+  };
+  const [currentQuestion, setCurrentQuestion] = useState<string>("");
+
   useEffect(() => {
     const loadLinks = () => {
       if (typeof window !== "undefined") {
         const savedLinks = localStorage.getItem("clever_chat_links");
         if (savedLinks) {
           setLinks(JSON.parse(savedLinks));
+        }
+
+        const savedMarkdown = localStorage.getItem("clever_chat_markdown");
+        if (savedMarkdown) {
+          setConverseAiMarkdown(savedMarkdown);
         }
       }
     };
@@ -69,6 +106,12 @@ export const AppContextProvider: React.FC<Props> = (props) => {
         onLinks: linkHandler,
         onLink: setLink,
         onDelete: onDeleteHandler,
+        converseAiMarkdown,
+        onConverseAiMarkdown,
+        converseAiChats,
+        onConverseAiChats,
+        currentQuestion,
+        setCurrentQuestion,
       }}
     >
       {props.children}

@@ -4,7 +4,9 @@ import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
 export default function insight_ai() {
   return (
     <div className={classes.container}>
-      <div className={classes.box}>insight_ai</div>
+      <div className={classes.box}>
+        Our AI-powered insights help you understand your customers better.
+      </div>
       <BottomNavigation
         left={{
           name: "Intelligent AI Chatbot",
