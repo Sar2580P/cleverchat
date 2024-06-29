@@ -1,5 +1,5 @@
 import React from "react";
-import classes from "@/styles/Loading.module.css";
+import classes from "@/components/Loading/Loading.module.css";
 
 type LoadingProps = {
   height?: string;

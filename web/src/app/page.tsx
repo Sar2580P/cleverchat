@@ -1,7 +1,9 @@
+import classes from "@/styles/page.module.css";
+
 export default function Home() {
   return (
-    <div>
-      <div>Hello World</div>
+    <div className={classes.container}>
+      <div className={classes.box}>Home page</div>
     </div>
   );
 }
