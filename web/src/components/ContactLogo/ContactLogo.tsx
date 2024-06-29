@@ -19,10 +19,10 @@ const ContactLogo: React.FC<ContactLogoProps> = ({ size, rotate, gapSize }) => {
     "https://www.facebook.com/",
   ];
   const LOGOS = [
-    <AiOutlineLinkedin />,
-    <AiOutlineInstagram />,
-    <FaSquareXTwitter />,
-    <FaFacebook />,
+    <AiOutlineLinkedin key={0} />,
+    <AiOutlineInstagram key={1} />,
+    <FaSquareXTwitter key={2} />,
+    <FaFacebook key={3} />,
   ];
   const contact_arr = ["linkedin", "instagram", "twitter", "facebook"];
 

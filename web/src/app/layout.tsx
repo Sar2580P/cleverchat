@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { NotificationContextProvider } from "@/contexts/NotificationContext";
+import { AppContextProvider } from "@/contexts/AppContext";
 import Notifications from "@/components/Notification/Notifications";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,10 +24,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NotificationContextProvider>
-          <Notifications />
-          <Header />
-          {children}
-          <Footer />
+          <AppContextProvider>
+            <Notifications />
+            <Header />
+            {children}
+            <Footer />
+          </AppContextProvider>
         </NotificationContextProvider>
       </body>
     </html>
