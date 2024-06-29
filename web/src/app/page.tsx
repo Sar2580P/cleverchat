@@ -1,9 +1,21 @@
 "use client";
+import { useContext } from "react";
 import classes from "@/styles/page.module.css";
 import AddLinks from "@/components/AddLinks/AddLinks";
 import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
 import Button from "@/reusables/Button/Button";
+import AppContext from "@/contexts/AppContext";
+import usePostLLMResponse from "@/hooks/usePostLLMResponse";
+
 export default function Home() {
+  const { links } = useContext(AppContext);
+  const { postLLMResponse, loading } = usePostLLMResponse();
+  const handleSubmit = async () => {
+    const response = await postLLMResponse(
+      { links: links },
+      "link_knowledge_base/"
+    );
+  };
   return (
     <div className={classes.container}>
       <div className={classes.box}>
@@ -30,12 +42,7 @@ export default function Home() {
           display: "block",
         }}
       />
-      <Button
-        text="Make Your AI Smarter"
-        onClick={() => {
-          console.log("Make Your AI Smarter");
-        }}
-      />
+      <Button text="Make Your AI Smarter" onClick={handleSubmit} />
     </div>
   );
 }

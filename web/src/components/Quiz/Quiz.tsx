@@ -3,52 +3,8 @@ import React, { useEffect, useContext } from "react";
 import classes from "@/components/Quiz/Quiz.module.css";
 import Button from "@/reusables/Button/Button";
 import AppContext from "@/contexts/AppContext";
-
-type Question = {
-  question: string;
-  type: "text" | "multi" | "single";
-  options: { id: string; option: string }[];
-  id: string;
-};
-
-const questions: Question[] = [
-  {
-    question: "What is your name?",
-    type: "text",
-    options: [],
-    id: "1",
-  },
-  {
-    question: "Select your favorite colors",
-    type: "multi",
-    options: [
-      { id: "1", option: "Red" },
-      { id: "2", option: "Blue" },
-      { id: "3", option: "Green" },
-    ],
-    id: "2",
-  },
-  {
-    question: "Which planet is known as the Red Planet?",
-    type: "single",
-    options: [
-      { id: "1", option: "Earth" },
-      { id: "2", option: "Mars" },
-      { id: "3", option: "Jupiter" },
-    ],
-    id: "3",
-  },
-  {
-    question: "What is the capital of France?",
-    type: "single",
-    options: [
-      { id: "1", option: "Paris" },
-      { id: "2", option: "London" },
-      { id: "3", option: "Berlin" },
-    ],
-    id: "4",
-  },
-];
+import useGetLLMResponse from "@/hooks/useGetLLMResponse";
+import usePostLLMResponse from "@/hooks/usePostLLMResponse";
 
 const Quiz = () => {
   const {
@@ -57,9 +13,15 @@ const Quiz = () => {
     evaluateAiAnswers,
     onEvaluateAiAnswers,
   } = useContext(AppContext);
+  const { getLLMResponse } = useGetLLMResponse();
+  const { postLLMResponse, loading } = usePostLLMResponse();
 
   useEffect(() => {
-    onEvaluateAiQuestions(questions);
+    const fetchData = async () => {
+      const response = await getLLMResponse("evaluate_ai/");
+      onEvaluateAiQuestions(response);
+    };
+    if (typeof window !== "undefined") fetchData();
   }, []);
 
   const handleAnswerChange = (
@@ -72,6 +34,7 @@ const Quiz = () => {
 
   const handleSubmit = () => {
     console.log(evaluateAiAnswers);
+    postLLMResponse({ data: evaluateAiAnswers }, "evaluate_ai/");
   };
 
   if (evaluateAiQuestions.length === 0) {

@@ -1,13 +1,23 @@
 "use client";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Markdown from "react-markdown";
 import classes from "@/styles/converse_ai.module.css";
 import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
 import AppContext from "@/contexts/AppContext";
 import Chat from "@/components/Chat/Chat";
+import useGetLLMResponse from "@/hooks/useGetLLMResponse";
 
 export default function ConverseAi() {
   const appCtx = useContext(AppContext);
+  const { getLLMResponse } = useGetLLMResponse();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getLLMResponse("converse_ai_readme/");
+      appCtx.onConverseAiMarkdown(response);
+    };
+    if (typeof window !== "undefined") fetchData();
+  }, []);
 
   return (
     <div className={classes.container}>

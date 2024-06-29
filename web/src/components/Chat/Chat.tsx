@@ -4,6 +4,7 @@ import classes from "@/components/Chat/Chat.module.css";
 import CustomBotChat from "@/components/Chat/CustomBotChat";
 import { IoSend } from "react-icons/io5";
 import AppContext from "@/contexts/AppContext";
+import usePostLLMResponse from "@/hooks/usePostLLMResponse";
 
 type Chat = {
   role: string;
@@ -19,6 +20,7 @@ const Chat = ({}) => {
     currentQuestion,
     setCurrentQuestion,
   } = useContext(AppContext);
+  const { postLLMResponse, loading } = usePostLLMResponse();
 
   const callBot = async () => {
     if (currentQuestion === "") return;
@@ -29,6 +31,18 @@ const Chat = ({}) => {
       },
     ]);
     setCurrentQuestion("");
+    const response = await postLLMResponse(
+      { message: currentQuestion },
+      "chat/"
+    );
+    if (response) {
+      onConverseAiChats([
+        {
+          role: "bot",
+          parts: [{ text: response }],
+        },
+      ]);
+    }
   };
 
   return (
