@@ -11,12 +11,14 @@ from collections import defaultdict
 from utils.misc_utils import logger, assert_
 
 class Web_Scrapper : 
-    def __init__(self, url:str):
+    def __init__(self, url:str = 'hello.com'):
         self.url = url.strip()
+        
+    def get_soup(self):
         headers = {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
             }
-        self.response = requests.get(url, headers=headers)
+        self.response = requests.get(self.url, headers=headers)
         self.soup = BeautifulSoup(self.response.text, 'html.parser')
         self.tags = ['h1', 'h2', 'h3','h4', 'p', 'ul', 'ol', 'a', 'img', 'figcaption']
         self.restricted = ['read more' , 'https://', 'http://', 'www.', 
@@ -24,7 +26,7 @@ class Web_Scrapper :
                         'references', 'external links', 'see also', 'about us', 'contact us', 'bibliography']
 
     def scrape_blog(self):
-
+        self.get_soup()
         # Find all the chunks of content in the blog
         self.chunks = []
         elements :List[bs4.element.Tag] = self.soup.find_all(self.tags)
@@ -72,8 +74,7 @@ class Web_Scrapper :
         return self.chunks
 
     def create_dict(self):
-        if not hasattr(self, 'chunks'):
-            self.scrape_blog()
+        self.scrape_blog()
             
         self.blog_dict = defaultdict(list)
         
@@ -89,8 +90,7 @@ class Web_Scrapper :
         
         Pattern-3 : All stuff after headings (from last) like : 'References', 'External links', 'See also' can be dropped.
         '''
-        if not hasattr(self, 'blog_dict'):
-            self.create_dict()
+        self.create_dict()
             
         # Pattern-2
         start = 0
@@ -137,8 +137,7 @@ class Web_Scrapper :
             - Save them in meta-data.
         '''
         
-        if not hasattr(self, 'bound_dict'):
-            self.filter_chunks()
+        self.filter_chunks()
             
         combined_indices =  (self.blog_dict['paragraph'][self.bound_dict['paragraph'][0]:self.bound_dict['paragraph'][1]+1] if 'paragraph' in self.blog_dict else []) + \
                             (self.blog_dict['list'][self.bound_dict['list'][0]:self.bound_dict['list'][1]+1] if 'list' in self.blog_dict else [])
@@ -238,5 +237,5 @@ class Web_Scrapper :
         
         
         
-# scr = Web_Scrapper('https://en.wikipedia.org/wiki/Depictions_of_nudity')
+# scr = Web_Scrapper('https://blog.google/technology/developers/google-gemma-2/')
 # scr.create_docs()           

@@ -7,7 +7,7 @@ from utils.llm_utils import Settings
 
 
 pipeline = Pipeline()
-pipeline.ingest_webdata_to_vecdb(db_name='medical_db')
+pipeline.ingest_webdata_to_vecdb(db_name='cancer_medical_db')
 
 Settings.llm.get_stats()
 # index = Vec_Store.get_vectorstore(path='vector_store/medical_db')

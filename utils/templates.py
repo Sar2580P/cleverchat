@@ -14,3 +14,14 @@ DEFAULT_NER_TEMPLATE = '''You need to extract Named Entities from the text.
         
         RESPONSE : 
         '''
+        
+COMBINE_INFO_TEMPLATE = '''
+You are provided with information collected though various sources. You need to serve all content given below nicely.
+Not polluting the data with your thoughts neither missing out on any information present in data.
+Return in nice format with appropriate mark-up and bulleted points...
+
+
+COLLECTED INFORMATION ---> 
+
+{info}
+'''

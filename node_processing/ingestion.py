@@ -27,12 +27,12 @@ class Pipeline:
         nodes = self.ingestion.run(documents=documents, in_place=False, show_progress=True)
         return nodes
     
-    def ingest_webdata_to_vecdb(self, path = 'data_sources/links.txt' , db_name = 'medical_db'):
-        with open('data_sources/links.txt', 'r') as f:
+    def ingest_webdata_to_vecdb(self, path = 'data_sources/links.txt' , name:str = 'medical', is_persistent:bool = True):
+        with open(path, 'r') as f:
             web_links = [w.strip() for w in f.readlines()]
                     
         unsuccessful_trials = []
-        index = Vec_Store.get_vectorstore(path=f'vector_stores/{db_name}')
+        index = Vec_Store.get_vectorstore(path=f'vector_stores/{name}_db', is_ephemeral = not is_persistent)
         
         for link in web_links:
             scrapper = Web_Scrapper(str(link))
@@ -53,7 +53,7 @@ class Pipeline:
                 continue
             try:
                 pr.yellow(len(docs))
-                nodes = self.run_ingestion(docs[:20])
+                nodes = self.run_ingestion(docs)
                 pr.green(f'Nodes extracted {pr.tick}', delimiter='\t')
                 index.insert_nodes(nodes)
                 pr.green(f'Nodes inserted {pr.tick}')
@@ -67,7 +67,7 @@ class Pipeline:
                 }
                 unsuccessful_trials.append(d)
         
-        with open('data_sources/unsuccessful_trials.json', 'w') as f:
+        with open(f'data_sources/unsuccessful_trials_{name}.json', 'w') as f:
             json.dump(unsuccessful_trials, f)
                 
             

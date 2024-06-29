@@ -86,7 +86,7 @@ class Retriever(BaseModel):
     
     def get_node_post_processors(self):
         self.node_post_processors = [
-                        SimilarityPostprocessor(similarity_cutoff=0.75) ,
+                        SimilarityPostprocessor(similarity_cutoff=0.66) ,
                         # TimeWeightedPostprocessor(
                         #     time_decay=0.5, time_access_refresh=False, top_k=1
                         # )
@@ -101,16 +101,17 @@ class Retriever(BaseModel):
         self.query_engine = RetrieverQueryEngine(
                                 retriever=self.retriever,
                                 # response_synthesizer=self.response_synthesizer,
-                                # node_postprocessors=self.node_post_processors,
+                                node_postprocessors=self.node_post_processors,
                             )
         
     def respond_query(self, query:str):
         self.get_query_engine()
             
         response = self.query_engine.query(query)
-        print(response.source_nodes)
+        logger.debug(f'Extracted {len(response.source_nodes)} similar nodes')
+        logger.info(response.source_nodes)
         aggregated_metadata = self.aggregate_metadata(response.source_nodes)
-        return response.response ,{} # aggregated_metadata
+        return response.response , aggregated_metadata
 
     def aggregate_metadata(self, nodes: List[NodeWithScore]):
         '''
@@ -135,13 +136,13 @@ class Retriever(BaseModel):
                 
         agg_metadata['key_words'] = list(agg_metadata['key_words'])
         agg_metadata['sources'] = list(agg_metadata['sources'])
-        # agg_metadata['imgs'] = list(agg_metadata['imgs'])
+        agg_metadata['imgs'] = list(agg_metadata['imgs'])
         
         logger.debug(f'Aggregated metadata : {agg_metadata}')
         return agg_metadata
     
     
-A = Retriever.from_config_file(config_file_path = 'configs/retrieval.yaml')
-A.index = 'medical_db'
-x = A.respond_query('tell about cancer')
-print(x)
+# A = Retriever.from_config_file(config_file_path = 'configs/retrieval.yaml')
+# A.index = 'cancer_medical_db'
+# x = A.respond_query('show me some stats about melanoma cancer?')
+# print(x)

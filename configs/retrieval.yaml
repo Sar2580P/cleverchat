@@ -4,7 +4,7 @@ retrieval:
     similarity_top_k: 10
 
 response_synthesis:
-  response_tone: lustful assistant with nudity prone tone
+  response_tone: helpful assisstant with caring and positive tone
   instance_attr:
     response_mode: refine
     structured_answer_filtering: False
