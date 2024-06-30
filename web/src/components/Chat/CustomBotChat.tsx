@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import ChatItem from "@/components/Chat/ChatItem";
 import classes from "@/components/Chat/CustomBotChat.module.css";
+import LoadingComponent from "@/components/Loading/Loading";
 
 type Chat = {
   data: {
@@ -10,9 +11,10 @@ type Chat = {
       text: string;
     }[];
   }[];
+  loading: boolean;
 };
 
-const CustomBotChat: React.FC<Chat> = ({ data }) => {
+const CustomBotChat: React.FC<Chat> = ({ data, loading }) => {
   const chatsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,6 +29,14 @@ const CustomBotChat: React.FC<Chat> = ({ data }) => {
         {data.map((chat, index) => (
           <ChatItem key={index} message={chat.parts[0].text} user={chat.role} />
         ))}
+        {loading && (
+          <LoadingComponent
+            height="auto"
+            size="11px"
+            width="auto"
+            alignItems="flex-start"
+          />
+        )}
       </div>
     </div>
   );

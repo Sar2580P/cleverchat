@@ -49,7 +49,7 @@ const Chat = ({}) => {
     <div className={classes["container"]}>
       <div className={classes["box"]}>
         <div className={classes["chat-container"]}>
-          <CustomBotChat data={converseAiChats} />
+          <CustomBotChat data={converseAiChats} loading={loading} />
         </div>
         <div className={classes["chat-bottom"]}>
           <input

@@ -5,6 +5,9 @@ import Button from "@/reusables/Button/Button";
 import AppContext from "@/contexts/AppContext";
 import useGetLLMResponse from "@/hooks/useGetLLMResponse";
 import usePostLLMResponse from "@/hooks/usePostLLMResponse";
+import LoadingComponent from "@/components/Loading/Loading";
+import Loader from "@/reusables/Loader/Loader";
+import Popup from "@/reusables/PopUp/PopUp";
 
 const Quiz = () => {
   const {
@@ -12,14 +15,19 @@ const Quiz = () => {
     onEvaluateAiQuestions,
     evaluateAiAnswers,
     onEvaluateAiAnswers,
+    evaluateAiResult,
+    onEvaluateAiResult,
+    evaluateAiResultVisible,
+    setEvaluateAiResultVisible,
   } = useContext(AppContext);
-  const { getLLMResponse } = useGetLLMResponse();
-  const { postLLMResponse, loading } = usePostLLMResponse();
+
+  const { getLLMResponse, loading: get_loading } = useGetLLMResponse();
+  const { postLLMResponse, loading: post_loading } = usePostLLMResponse();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getLLMResponse("evaluate_ai/");
-      onEvaluateAiQuestions(response);
+      if (response) onEvaluateAiQuestions(response);
     };
     if (typeof window !== "undefined") fetchData();
   }, []);
@@ -32,10 +40,21 @@ const Quiz = () => {
     onEvaluateAiAnswers(questionId, optionValue, type);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(evaluateAiAnswers);
-    postLLMResponse({ data: evaluateAiAnswers }, "evaluate_ai/");
+    const response = await postLLMResponse(
+      { data: evaluateAiAnswers },
+      "evaluate_ai/"
+    );
+    if (response) {
+      onEvaluateAiResult(response);
+      setEvaluateAiResultVisible(true);
+    }
   };
+
+  if (get_loading) {
+    return <LoadingComponent height="70vh" />;
+  }
 
   if (evaluateAiQuestions.length === 0) {
     return (
@@ -103,6 +122,20 @@ const Quiz = () => {
         </div>
       ))}
       <Button text="Submit" onClick={handleSubmit} />
+      {post_loading && <Loader text="Evaluating..." />}
+      {evaluateAiResultVisible && (
+        <Popup
+          heading="Evaluation Result"
+          data={evaluateAiResult}
+          onClose={() => setEvaluateAiResultVisible(false)}
+        />
+      )}
+      {Object.keys(evaluateAiResult).length > 0 && (
+        <Button
+          text="Show Result"
+          onClick={() => setEvaluateAiResultVisible(true)}
+        />
+      )}
     </div>
   );
 };

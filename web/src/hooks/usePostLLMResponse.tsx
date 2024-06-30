@@ -10,6 +10,7 @@ const usePostLLMResponse = () => {
     console.log(data);
     try {
       setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/agents/${path}`,
         {
