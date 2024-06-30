@@ -21,7 +21,7 @@ from llama_index.core.base.llms.types import (
 )
 from llama_index.core.utilities.gemini_utils import merge_neighboring_same_role_messages
 load_dotenv(find_dotenv()) # read local .env file
-from utils.misc_utils import pr
+from Intelligence.utils.misc_utils import pr
 
 
 class Delayed_LLM(Gemini):

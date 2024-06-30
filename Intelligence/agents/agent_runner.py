@@ -35,7 +35,7 @@ from agents.agent_worker import MyAgentWorker
 from testing_dag.DAG import agent_executor
 from testing_dag.node import Node ,create_graph_from_nodes_json
 from collections import deque
-from utils.misc_utils import logger, assert_
+from Intelligence.utils.misc_utils import logger, assert_
 
 
 class MyAgentRunner(AgentRunner):

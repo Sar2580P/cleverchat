@@ -1,11 +1,11 @@
 from pydantic import BaseModel, field_validator
 from pathlib import Path
 from typing import Optional
-from node_processing.web_scrapper import Web_Scrapper
-from node_processing.ingestion import Pipeline
-from utils.misc_utils import pr
-from llama_index.core.schema import Document, TextNode
-from typing import List, ClassVar
+from Intelligence.node_processing.web_scrapper import Web_Scrapper
+from Intelligence.node_processing.ingestion import Pipeline
+from Intelligence.utils.misc_utils import pr
+from llama_index.core.schema import Document, TextNode, BaseNode
+from typing import List, ClassVar, Dict
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
@@ -13,9 +13,12 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-from utils.templates import COMBINE_INFO_TEMPLATE
+from Intelligence.utils.templates import COMBINE_INFO_TEMPLATE, QUIZ_TEMPLATE
 from llama_index.core.prompts import PromptTemplate
-from utils.llm_utils import Settings
+from Intelligence.utils.llm_utils import Settings
+from Intelligence.utils.misc_utils import logger, pr
+import asyncio
+import ast
 
 class ReadingInfo(BaseModel):
     file_path: Path
@@ -26,6 +29,9 @@ class ReadingInfo(BaseModel):
     scrapper :ClassVar[Web_Scrapper] = Web_Scrapper()
     chunk_size:int=150
     chunk_overlap:int=40
+    aggregated_notes_collection: List[str] = None
+    quiz_collection: List[Dict] = None
+    quiz_template: str = QUIZ_TEMPLATE
     
     @field_validator('file_path', mode='before')
     def file_must_exist(cls, v: Path):
@@ -141,7 +147,7 @@ class ReadingInfo(BaseModel):
         return ordered_contents
     
     
-    async def create_notes(self, contents: List[str]) -> List[str]:
+    async def create_notes(self, contents: List[str]) -> List[BaseNode]:
         import asyncio
 
         async def fetch_note(content: str, template:str) -> str:
@@ -154,17 +160,41 @@ class ReadingInfo(BaseModel):
         tasks = [fetch_note(content, self.combine_info_template) for content in tqdm(contents, desc = 'making notes using LLM')]
         
         # Await the completion of all tasks
-        notes = await asyncio.gather(*tasks)
+        self.aggregated_notes_collection = await asyncio.gather(*tasks)
+        return self.aggregated_notes_collection
+    
+    async def create_quiz(self, contents: List[BaseNode]= None) -> List[Dict]:
+        async def fetch_docs(content: str, template:str) -> str:
+            full_prompt = PromptTemplate(template).format(info= content)
+            response = f'''{Settings.llm.complete(full_prompt)}'''
+            try : 
+                quiz = ast.literal_eval(response[response.find('[')  : response.rfind(']')+1])
+                return quiz
+            except Exception as e:
+                logger.error(f'Error in creating quiz :  {response}')
+                return []
+
+        if contents is None:
+            contents = self.aggregated_notes_collection
+        # Create a list of tasks for asynchronous fetching of notes
+        tasks = [fetch_docs(content, self.quiz_template) for content in tqdm(contents, desc = 'making quiz using LLM')]
         
-        return notes
+        # Await the completion of all tasks
+        quiz_list = await asyncio.gather(*tasks)
+        self.quiz_collection = []
+        for quiz in quiz_list:
+            self.quiz_collection.extend(quiz)
+        return self.quiz_collection
     
     
 
-import asyncio
-a = ReadingInfo(file_path=Path('tools/teacher/links.txt'))
-x = a.ordering_content(pd.read_csv('tools/teacher/clustering_results.csv'))
-y = asyncio.run(a.create_notes(x))
-pr.green(y)
+# import asyncio
+# a = ReadingInfo(file_path=Path('Intelligence/tools/teacher/links.txt'))
+# x = a.ordering_content(pd.read_csv('Intelligence/tools/teacher/clustering_results.csv'))
+# y = asyncio.run(a.create_notes(x[:1]))
+# z = asyncio.run(a.create_quiz(y))
+# pr.green(y)
+# pr.yellow(z)
         
     
     

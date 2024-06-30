@@ -1,9 +1,9 @@
-from node_processing.ingestion import Pipeline 
+from Intelligence.node_processing.ingestion import Pipeline 
 from llama_index.core import get_response_synthesizer 
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core.query_engine import RetrieverQueryEngine
-from utils.misc_utils import pr
-from utils.llm_utils import Settings
+from Intelligence.utils.misc_utils import pr
+from Intelligence.utils.llm_utils import Settings
 
 
 pipeline = Pipeline()

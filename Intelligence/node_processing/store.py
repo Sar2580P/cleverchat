@@ -1,6 +1,6 @@
 import os
-from utils.misc_utils import pr, logger
-from utils.llm_utils import Settings
+from Intelligence.utils.misc_utils import pr, logger
+from Intelligence.utils.llm_utils import Settings
 import chromadb
 from llama_index.core import Document, VectorStoreIndex, StorageContext
 from llama_index.vector_stores.chroma import ChromaVectorStore
@@ -32,5 +32,6 @@ class Vec_Store(VectorStoreIndex):
             embed_model= Settings.embed_model ,
             vector_store = vector_store
         )
+        
         return index
     

@@ -8,7 +8,7 @@ from langchain.agents.loading import AGENT_TO_CLASS
 import json
 from testing_dag.agent import agent_obj, task_tools
 from langchain.output_parsers import OutputFixingParser
-from utils.misc_utils import logger, assert_
+from Intelligence.utils.misc_utils import logger, assert_
 # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 # agent_cls = AGENT_TO_CLASS[agent]
 # agent_obj = agent_cls.from_llm_and_tools(

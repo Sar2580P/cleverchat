@@ -3,11 +3,11 @@ from llama_index.core.extractors import TitleExtractor, QuestionsAnsweredExtract
 from llama_index.core.ingestion import IngestionPipeline, IngestionCache
 from llama_index.core import Document
 from typing import Union, List
-from utils.misc_utils import pr
-from utils.llm_utils import Settings
-from node_processing.custom_extractors import DescriptiveKeywords
-from node_processing.store import Vec_Store
-from node_processing.web_scrapper import Web_Scrapper
+from Intelligence.utils.misc_utils import pr
+from Intelligence.utils.llm_utils import Settings
+from Intelligence.node_processing.custom_extractors import DescriptiveKeywords
+from Intelligence.node_processing.store import Vec_Store
+from Intelligence.node_processing.web_scrapper import Web_Scrapper
 import json 
 
 class Pipeline:
