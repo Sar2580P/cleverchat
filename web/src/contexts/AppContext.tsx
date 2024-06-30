@@ -47,6 +47,11 @@ type AppContextType = {
     optionValue: string,
     type: "text" | "single" | "multi"
   ) => void;
+
+  evaluateAiResult: Record<string, string>;
+  onEvaluateAiResult: (result: Record<string, string>) => void;
+  evaluateAiResultVisible: boolean;
+  setEvaluateAiResultVisible: (visible: boolean) => void;
 };
 
 const AppContext = React.createContext<AppContextType>({
@@ -65,6 +70,10 @@ const AppContext = React.createContext<AppContextType>({
   onEvaluateAiQuestions: () => {},
   evaluateAiAnswers: [],
   onEvaluateAiAnswers: () => {},
+  evaluateAiResult: {},
+  onEvaluateAiResult: () => {},
+  evaluateAiResultVisible: false,
+  setEvaluateAiResultVisible: () => {},
 });
 
 type Props = {
@@ -147,6 +156,13 @@ export const AppContextProvider: React.FC<Props> = (props) => {
       )
     );
   };
+  const [evaluateAiResult, setEvaluateAiResult] = useState<
+    Record<string, string>
+  >({});
+  const onEvaluateAiResult = (result: Record<string, string>) => {
+    setEvaluateAiResult(result);
+  };
+  const [evaluateAiResultVisible, setEvaluateAiResultVisible] = useState(false);
 
   useEffect(() => {
     const loadLinks = () => {
@@ -183,6 +199,10 @@ export const AppContextProvider: React.FC<Props> = (props) => {
         onEvaluateAiQuestions,
         evaluateAiAnswers,
         onEvaluateAiAnswers,
+        evaluateAiResult,
+        onEvaluateAiResult,
+        evaluateAiResultVisible,
+        setEvaluateAiResultVisible,
       }}
     >
       {props.children}

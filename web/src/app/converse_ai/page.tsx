@@ -6,15 +6,16 @@ import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
 import AppContext from "@/contexts/AppContext";
 import Chat from "@/components/Chat/Chat";
 import useGetLLMResponse from "@/hooks/useGetLLMResponse";
+import LoadingComponent from "@/components/Loading/Loading";
 
 export default function ConverseAi() {
   const appCtx = useContext(AppContext);
-  const { getLLMResponse } = useGetLLMResponse();
+  const { getLLMResponse, loading } = useGetLLMResponse();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getLLMResponse("converse_ai_readme/");
-      appCtx.onConverseAiMarkdown(response);
+      if (response) appCtx.onConverseAiMarkdown(response);
     };
     if (typeof window !== "undefined") fetchData();
   }, []);
@@ -24,11 +25,15 @@ export default function ConverseAi() {
       <div className={classes.box}>
         <div className={classes.left}>
           <h1>Summary of all the links</h1>
-          <Markdown>
-            {appCtx.converseAiMarkdown
-              ? appCtx.converseAiMarkdown
-              : "No Knowledge Found"}
-          </Markdown>
+          {loading ? (
+            <LoadingComponent height="90vh" />
+          ) : (
+            <Markdown>
+              {appCtx.converseAiMarkdown
+                ? appCtx.converseAiMarkdown
+                : "No Knowledge Found"}
+            </Markdown>
+          )}
         </div>
         <div className={classes.right}>
           <Chat />

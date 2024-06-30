@@ -3,8 +3,8 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  min-height: calc(100vh - 5rem);
-  padding-top: 5rem;
+  min-height: calc(100vh - 4rem);
+  padding-top: 4rem;
   width: -webkit-fill-available;
   position: relative;
 }
@@ -25,7 +25,7 @@
   justify-content: flex-start;
   align-items: center;
   gap: 0.1rem;
-  height: calc(88vh - 5rem);
+  height: calc(88vh - 4rem);
   overflow-y: scroll;
   border-right: 2px solid #ddd;
 }
@@ -43,5 +43,5 @@
   justify-content: flex-start;
   align-items: flex-start;
   gap: 0.3rem;
-  height: calc(88vh - 5rem);
+  height: calc(88vh - 4rem);
 }

@@ -5,7 +5,7 @@ import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
 import useGetLLMResponse from "@/hooks/useGetLLMResponse";
 
 export default function InsightAi() {
-  const { getLLMResponse } = useGetLLMResponse();
+  const { getLLMResponse, loading } = useGetLLMResponse();
 
   useEffect(() => {
     const fetchData = async () => {

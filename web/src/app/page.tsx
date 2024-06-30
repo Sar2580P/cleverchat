@@ -6,6 +6,7 @@ import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
 import Button from "@/reusables/Button/Button";
 import AppContext from "@/contexts/AppContext";
 import usePostLLMResponse from "@/hooks/usePostLLMResponse";
+import Loader from "@/reusables/Loader/Loader";
 
 export default function Home() {
   const { links } = useContext(AppContext);
@@ -43,6 +44,7 @@ export default function Home() {
         }}
       />
       <Button text="Make Your AI Smarter" onClick={handleSubmit} />
+      {loading && <Loader text="Processing..." />}
     </div>
   );
 }
