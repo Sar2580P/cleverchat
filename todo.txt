@@ -1,63 +1,18 @@
-Doubts : 
-- How query is answered in thought-action-observation chain?
-- What role are steps playing?
-- How AgentWorker is working? (openAIWorker , ReActWorker)
-
------------------------------------------------------------------------------------------------
-
-Buliding Heirarchial Agents : 
-- Each agent should return a DAG
-- Each node in DAG contains :
-                    - its parents
-                    - sub-task
-- The down-stream tool/agent answers a node by fusing output of parent nodes as context in sub-task of current node.
-
-
-
-[
-    {
-        "thought": "Action: get_similar_work_items",
-        "tool": {
-            "tool_input": "TKT-123",
-            "tool_name": "get_similar_work_items",
-            "tool_usage_idx": 0,
-        }
-    },
-    {
-        "thought": "Action: summarize_objects",
-        "tool": {
-            "tool_input": "$$PREV[0]",
-            "tool_name": "summarize_objects",
-            "tool_usage_idx": 1,
-        }
-    },
-    {
-        "thought": "Action: create_actionable_tasks_from_text",
-        "tool": {
-            "tool_input": "$$PREV[1]",
-            "tool_name": "create_actionable_tasks_from_text",
-            "tool_usage_idx": 2,
-        }
-    },
-    {
-        "thought": "Action: prioritize_objects",
-        "tool": {
-            "tool_input": "$$PREV[2]",
-            "tool_name": "prioritize_objects",
-            "tool_usage_idx": 3,
-        }
-    }
-]
-
-I need to create node instances from above json... Initialize empty dictionary (tool_usage_idx : nodeInstance) ... which gets updated as we iterate through above list.... 
-This dictionary is passed as mapping attribute to Node class... Whenever the parent_class 
-
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 - check scrapper functioning and do scraping of websites : done
-- Create a vectordb of symptoms of diseases.    : done
-- Create a pipeline for KnowledgeGraph   : skipping
-- Create hybrid retriever   
-- Re-ranker
+- Create a vectordb of symptoms of diseases. : done
+- Create a pipeline for KnowledgeGraph : skipping
+- Create hybrid retriever   ----> done
+- Re-ranker ---> done jugad of using BM25 for ranking after retrieval from vector_store
+- Teacher Tool : 
+    - Implement Quiz setup   ---> done
+- Implement Language Module
+- Implement query enhancer Module
+- Pin images to relevant para   
+- Create 20+ vec-db specialists.
+- Connect these tools to DAG
 
 
-from llama_index.core.vector_stores.types import VectorStoreQueryMode
+
+Post Processing : 
+- MetadataReplacementPostProcessor
+- 

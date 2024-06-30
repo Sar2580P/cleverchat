@@ -138,6 +138,37 @@ def search_and_download_video(query):
 
     driver.quit()
 
-if __name__ == "__main__":
-    search_query = "clip on car manufacturing"
-    search_and_download_video(search_query)
+# if __name__ == "__main__":
+#     search_query = "clip on car manufacturing"
+#     search_and_download_video(search_query)
+
+response = '''[
+  {
+    'question': 'Which of the following is NOT a symptom of diabetes?',
+    'options': ['Increased thirst', 'Frequent urination', 'Blurred vision', 'Weight gain'],
+    'answer': 'Weight gain'
+  },
+  {
+    'question': 'Which type of diabetes develops gradually?',
+    'options': ['Type 1', 'Type 2', 'Type 1.5', 'Prediabetes'],
+    'answer': 'Type 2'
+  },
+  {
+    'question': 'What is the most common type of diabetes?',
+    'options': ['Type 1', 'Type 2', 'Type 1.5', 'Prediabetes'],
+    'answer': 'Type 2'
+  },
+  {
+    'question': 'Which type of diabetes is characterized by sudden onset of symptoms?',
+    'options': ['Type 1', 'Type 2', 'Type 1.5', 'Prediabetes'],
+    'answer': 'Type 1'
+  },
+  {
+    'question': 'What is the term for blood sugar levels that are higher than expected but not high enough for a type 2 diabetes diagnosis?',
+    'options': ['Type 1 diabetes', 'Type 2 diabetes', 'Prediabetes', 'Type 1.5 diabetes'],
+    'answer': 'Prediabetes'
+  }
+]'''
+
+import ast
+print(ast.literal_eval(response))

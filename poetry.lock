@@ -2845,6 +2845,21 @@ llama-index-core = ">=0.10.7,<0.11.0"
 llama-parse = ">=0.4.0,<0.5.0"
 
 [[package]]
+name = "llama-index-retrievers-bm25"
+version = "0.1.4"
+description = "llama-index retrievers bm25 integration"
+optional = false
+python-versions = "<4.0,>=3.8.1"
+files = [
+    {file = "llama_index_retrievers_bm25-0.1.4-py3-none-any.whl", hash = "sha256:246fdcda536bd2bff94a5e578d1fb6af8824c95c450c65b34fcc32adf673068c"},
+    {file = "llama_index_retrievers_bm25-0.1.4.tar.gz", hash = "sha256:4949c75628d8e5ead246e2812556aa7d397a9a2a02e99731534d6a190387b573"},
+]
+
+[package.dependencies]
+llama-index-core = ">=0.10.1,<0.11.0"
+rank-bm25 = ">=0.2.2,<0.3.0"
+
+[[package]]
 name = "llama-index-vector-stores-chroma"
 version = "0.1.8"
 description = "llama-index vector_stores chroma integration"
@@ -5215,6 +5230,23 @@ files = [
 cffi = {version = "*", markers = "implementation_name == \"pypy\""}
 
 [[package]]
+name = "rank-bm25"
+version = "0.2.2"
+description = "Various BM25 algorithms for document ranking"
+optional = false
+python-versions = "*"
+files = [
+    {file = "rank_bm25-0.2.2-py3-none-any.whl", hash = "sha256:7bd4a95571adadfc271746fa146a4bcfd89c0cf731e49c3d1ad863290adbe8ae"},
+    {file = "rank_bm25-0.2.2.tar.gz", hash = "sha256:096ccef76f8188563419aaf384a02f0ea459503fdf77901378d4fd9d87e5e51d"},
+]
+
+[package.dependencies]
+numpy = "*"
+
+[package.extras]
+dev = ["pytest"]
+
+[[package]]
 name = "regex"
 version = "2024.4.28"
 description = "Alternative regular expression module, to replace re."
@@ -7311,4 +7343,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "c83d23509f94eb2e812c19363ebfc358f6fa8c9f924437b9660ff6dfcc2629b0"
+content-hash = "213c6a70f062e1f8b1cb9f4b63c225158f825c025b8432dbfa91ec24b76e3ec2"

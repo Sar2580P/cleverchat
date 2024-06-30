@@ -8,7 +8,7 @@ import bisect
 from llama_index.core import Document
 from typing import Union, List
 from collections import defaultdict 
-from utils.misc_utils import logger, assert_
+from Intelligence.utils.misc_utils import logger, assert_
 
 class Web_Scrapper : 
     def __init__(self, url:str = 'hello.com'):
