@@ -1,0 +1,96 @@
+.container {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 60vw;
+  box-shadow: var(--box-shadow);
+  transition: box-shadow var(--transition-speed);
+}
+
+.container:hover {
+  box-shadow: var(--hover-box-shadow);
+}
+
+.container > h2 {
+  padding: 0;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  text-align: left;
+  width: -webkit-fill-available;
+}
+
+.box {
+  display: flex;
+  gap: 1rem;
+  width: -webkit-fill-available;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.box > img {
+  flex: 1;
+}
+
+.box > p {
+  flex: 2;
+  padding-left: 1rem;
+  font-size: 0.9rem;
+  color: #333;
+  text-align: left;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: -webkit-fill-available;
+}
+
+.controls > button {
+  margin: 0 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: #fff;
+  transition: background-color var(--transition-speed),
+    transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.controls > button:hover,
+.controls > button:focus {
+  transform: translateY(-2px);
+  box-shadow: var(--hover-box-shadow);
+}
+
+.controls > button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 90vw;
+  }
+
+  .box,
+  .controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .controls > button {
+    width: 100%;
+    margin: 5px 0;
+  }
+}

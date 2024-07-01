@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .Intelligence.utils import post_link_knowledge_base , get_converse_ai_readme , post_chat , get_insight_ai_data , get_evaluate_ai , post_evaluate_ai
+from .utils import post_link_knowledge_base , get_converse_ai_readme , post_chat , get_insight_ai_data , get_evaluate_ai , post_evaluate_ai
 
 @api_view(['GET'])
 def getRoutes(request):

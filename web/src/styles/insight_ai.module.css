@@ -12,7 +12,19 @@
 .box {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0rem 1rem;
+  width: -webkit-fill-available;
+}
+
+.box > h1 {
+  padding: 0;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
   width: -webkit-fill-available;
 }
