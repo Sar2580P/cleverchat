@@ -67,6 +67,11 @@ a {
   --trans-dur: 0.3s;
   font-size: calc(16px + (20 - 16) * (100vw - 320px) / (1280 - 320));
 
+  /*  insight ai page*/
+  --transition-speed: 0.3s;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --hover-box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+
   /* FONT SIZE */
   --ft-100: 0.5rem;
   --ft-200: 0.625rem;
