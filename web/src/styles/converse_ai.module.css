@@ -25,17 +25,41 @@
   justify-content: flex-start;
   align-items: center;
   gap: 0.1rem;
-  height: calc(88vh - 4rem);
+  height: calc(85vh - 4rem);
   overflow-y: scroll;
   border-right: 2px solid #ddd;
+  padding-right: 1rem;
+  font-size: 0.8rem;
 }
 .left > h1 {
   margin: 0;
   padding: 0;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 500;
   color: #333;
+  padding-bottom: 0.5rem;
 }
+.left ul {
+  list-style: circle;
+  padding-left: 0.75rem;
+  margin: 0;
+}
+.left ul li {
+  margin: 0;
+  padding: 0.15rem 0.5rem;
+}
+.left p {
+  margin: 0;
+  padding: 0;
+}
+.left a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+.left a:hover {
+  color: var(--secondary-color);
+}
+
 .right {
   flex: 1;
   display: flex;
@@ -43,5 +67,5 @@
   justify-content: flex-start;
   align-items: flex-start;
   gap: 0.3rem;
-  height: calc(88vh - 4rem);
+  height: calc(85vh - 4rem);
 }

@@ -17,12 +17,12 @@
   color: var(--primary-color);
   position: relative;
   width: -webkit-fill-available;
-  padding: 0.7rem;
+  padding: 0.5rem;
 
   border-radius: 20px;
 }
 .user-logo {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   color: var(--light-white-color);
   background-color: var(--tertiary-color);
   padding: 0.5rem;
@@ -31,7 +31,7 @@
   text-transform: uppercase;
 }
 .message {
-  font-size: 1rem;
+  font-size: 0.75rem;
   color: var(--message-color);
   width: 90%;
   word-wrap: break-word;
@@ -48,12 +48,12 @@
 }
 .message ul {
   list-style: circle;
-  padding-left: 1rem;
+  padding-left: 0.75rem;
   margin: 0;
 }
 .message ul li {
   margin: 0;
-  padding: 0.25rem 0.5rem;
+  padding: 0.15rem 0.5rem;
 }
 .message p {
   margin: 0;

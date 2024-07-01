@@ -29,14 +29,14 @@
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 .list {
   list-style-type: none;
   padding: 0;
   margin: 0;
   margin-top: 20px;
-  max-height: 250px;
+  max-height: 230px;
   overflow-y: scroll;
 }
 .listItem {
@@ -59,7 +59,7 @@
 .listItem a {
   color: var(--title-color);
   text-decoration: none;
-  font-size: 0.9em;
+  font-size: 0.75rem;
   transition: color 0.3s ease;
   line-break: anywhere;
 }
@@ -79,9 +79,9 @@
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 .icon {
   color: var(--white-color);
-  font-size: 0.9rem;
+  font-size: 0.7rem;
 }

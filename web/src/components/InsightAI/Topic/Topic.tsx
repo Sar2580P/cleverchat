@@ -91,9 +91,9 @@ const Topic: React.FC<TopicProps> = ({ name, image, description, onEnd }) => {
     <div className={classes["container"]}>
       <h2>{name}</h2>
       <div className={classes["box"]}>
-        {image && <Image src={image} alt={name} width={300} height={400} />}
+        {image && <Image src={image} alt={name} width={260} height={350} />}
         {!image && (
-          <Image src="/background.jpg" alt={name} width={300} height={400} />
+          <Image src="/background.jpg" alt={name} width={260} height={350} />
         )}
         {renderTextWithHighlight()}
       </div>

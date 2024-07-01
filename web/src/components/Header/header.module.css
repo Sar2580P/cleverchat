@@ -85,7 +85,7 @@
 }
 .right_Navigation > a {
   all: unset;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--white-color);
   cursor: pointer;
@@ -114,7 +114,7 @@
   display: none;
 }
 .contactlogos > h1 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--white-color);
 }
 @media screen and (max-width: 620px) {
@@ -147,7 +147,7 @@
   .right_Navigation_Collapsed > a {
     all: unset;
     color: var(--white-color);
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 500;
     cursor: pointer;
   }
@@ -181,6 +181,6 @@
     display: none;
   }
   .right_Navigation_Collapsed {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }

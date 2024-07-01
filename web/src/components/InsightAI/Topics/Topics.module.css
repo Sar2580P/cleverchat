@@ -7,3 +7,35 @@
   overflow-y: scroll;
   width: -webkit-fill-available;
 }
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.25rem;
+  z-index: 10000;
+}
+.buttons > button {
+  padding: 0.25rem;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  outline: none;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.buttons > button:hover,
+.buttons > button:focus {
+  background-color: #e2e2e2;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+.buttons > button:active {
+  background-color: #d0d0d0;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
+}
+.buttons > button > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: #333;
+}

@@ -9,7 +9,7 @@
 }
 .box > a > svg {
   color: var(--white-color);
-  font-size: var(--ft-800);
+  font-size: var(--ft-700);
 }
 .box > a > svg:hover {
   color: var(--primary-color);
