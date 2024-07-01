@@ -126,7 +126,7 @@ class ReadingInfo(BaseModel):
         print("3D TSNE plot saved as clustering_tsne_plot_3d.png")
 
     
-    def ordering_content(self, df:pd.DataFrame):
+    def ordering_content(self, df:pd.DataFrame)->List:
         # Step 1: Assign global ordering to labels based on minimum rank, breaking ties with maximum rank
         label_ordering :List = (
             df.groupby('label')['rank']
@@ -147,7 +147,7 @@ class ReadingInfo(BaseModel):
         return ordered_contents
     
     
-    async def create_notes(self, contents: List[str]) -> List[BaseNode]:
+    async def create_notes(self, contents: List[str]) -> List[str]:
         import asyncio
 
         async def fetch_note(content: str, template:str) -> str:
@@ -188,8 +188,8 @@ class ReadingInfo(BaseModel):
     
     
 
-# import asyncio
-# a = ReadingInfo(file_path=Path('Intelligence/tools/teacher/links.txt'))
+import asyncio
+KB_Creator = ReadingInfo(file_path=Path('Intelligence/tools/teacher/links.txt'))
 # x = a.ordering_content(pd.read_csv('Intelligence/tools/teacher/clustering_results.csv'))
 # y = asyncio.run(a.create_notes(x[:1]))
 # z = asyncio.run(a.create_quiz(y))
