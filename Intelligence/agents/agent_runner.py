@@ -179,7 +179,7 @@ class MyAgentRunner(AgentRunner):
         """Get prompt modules."""
         return {"agent_worker": self.agent_worker}
     
-    def create_dag_task(self, input: str, **kwargs: Any) -> Task:
+    def create_dag_task(self, input: str, **kwargs: Any) -> List[Node]:
         agent_executor({'input' : input})
         dag_setup :dict[str, Any] = create_graph_from_nodes_json('Intelligence/dag_planner/web_schema.json')
         logger.debug('\n---------Filling nodes topo-bfs manner--------\n')
@@ -239,6 +239,4 @@ class MyAgentRunner(AgentRunner):
         
 
 
-A = MyAgentRunner.from_tools(tools = task_tools, llm = Settings.llm)
-x = A.create_dag_task('Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them ')
-A.draw_dag_planning_graph(x)
+AgentRunner_ = MyAgentRunner.from_tools(tools = task_tools, llm = Settings.llm)
