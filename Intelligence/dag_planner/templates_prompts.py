@@ -1,5 +1,5 @@
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
-# from testing_dag.parsers import *
+# from dag_planner.parsers import *
 
 
 PAST_MISTAKES ='''

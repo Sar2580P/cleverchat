@@ -1,11 +1,11 @@
 from pydantic import BaseModel, Field
-from typing import Any, Dict, List, Union, Optional
+from typing import Any, Dict, List, Union, Optional, Tuple
 import json, os
 from llama_index.core.retrievers import VectorIndexRetriever
 from Intelligence.node_processing.store import Vec_Store
 from llama_index.core import get_response_synthesizer
-from Intelligence.utils.misc_utils import logger
-from Intelligence.retrieval_response.templates import text_qa_template, refine_template
+from Intelligence.utils.misc_utils import logger, pr
+from Intelligence.retrieval_response.templates import text_qa_template, refine_template, translation_template
 from llama_index.core import PromptTemplate
 from llama_index.core.postprocessor import SimilarityPostprocessor, TimeWeightedPostprocessor
 from llama_index.core.query_engine.retriever_query_engine import RetrieverQueryEngine
@@ -34,6 +34,7 @@ class Retriever(VectorIndexRetriever):
 
         retrieval_settings = config.get("retrieval", {})
         self.retrieval_settings = retrieval_settings if isinstance(retrieval_settings, dict) else {}
+
         super().__init__(
             index=self._index,
             verbose= verbose, 
@@ -94,7 +95,8 @@ class ResponseSynthesizer(BaseModel):
             # use_async=False,
             # streaming=False,
             **self.additional_attributes['response_synthesis']['instance_attr']
-        )    
+        ) 
+           
         return self.response_synthesizer
     
     def get_node_post_processors(self):
@@ -116,14 +118,13 @@ class ResponseSynthesizer(BaseModel):
                                 node_postprocessors=self.node_post_processors,
                             )
         
-    def respond_query(self, query:str):
+    def respond_query(self, query:str)-> Tuple[str, Dict[str, Union[List, str]]]:
         self.get_query_engine()
-            
+
         response = self.query_engine.query(query)
         logger.debug(f'Extracted {len(response.source_nodes)} similar nodes')
-        # logger.info(response.source_nodes)
-        # aggregated_metadata = self.aggregate_metadata(response.source_nodes)
-        return response.response ,  {} #aggregated_metadata
+        aggregated_metadata = self.aggregate_metadata(response.source_nodes)
+        return response.response ,  aggregated_metadata 
 
     def aggregate_metadata(self, nodes: List[NodeWithScore]):
         '''
@@ -150,17 +151,17 @@ class ResponseSynthesizer(BaseModel):
         agg_metadata['sources'] = list(agg_metadata['sources'])
         agg_metadata['imgs'] = list(agg_metadata['imgs'])
         
-        logger.debug(f'Aggregated metadata : {agg_metadata}')
+        # logger.debug(f'Aggregated metadata : {agg_metadata}')
         return agg_metadata
     
     
     
-# Ret = Retriever(config_file_path = 'Intelligence/configs/retrieval.yaml', index_path = 'cancer_medical_db')
+# Ret = Retriever(config_file_path = 'Intelligence/configs/retrieval.yaml', index_path = 'blood_pressure_medical_db')
 # # x = Ret.retrieve('share some details on cancer?')
 # # x = A.respond_query('share some details on cancer?')
 # # print(x)
 
 # s = ResponseSynthesizer.initialize(config_file_path='Intelligence/configs/retrieval.yaml', 
 #                                    retriever=Ret)
-# x = s.respond_query('what are symptoms of oral cancer?')
+# x = s.respond_query('Symptoms of high blood pressure.')
 # logger.info(x)

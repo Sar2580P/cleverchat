@@ -6,9 +6,10 @@ from langchain.agents.agent import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
 import json
-from testing_dag.agent import agent_obj, task_tools
+from Intelligence.dag_planner.agent import agent_obj, task_tools
+from langchain.agents.mrkl.base import ZeroShotAgent
 from langchain.output_parsers import OutputFixingParser
-from Intelligence.utils.misc_utils import logger, assert_
+from Intelligence.utils.misc_utils import logger, assert_, pr
 # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION
 # agent_cls = AGENT_TO_CLASS[agent]
 # agent_obj = agent_cls.from_llm_and_tools(
@@ -21,6 +22,7 @@ class CustomAgentExecutor(AgentExecutor):
     thought_execution_chain : List[Dict] = []   # added by me
     tool_gate : int = 0
     web_schema: List[Dict] = []
+    agent: ZeroShotAgent
     
     #_______________________________________________________________________________________________
     def _call(
@@ -28,26 +30,14 @@ class CustomAgentExecutor(AgentExecutor):
         inputs: Dict[str, str],
         run_manager: Optional[CallbackManagerForChainRun] = None,
     ) -> Dict[str, Any]:
-        print('Sia pati ramchandra ki jai')
+
         """Run text through and get agent response."""
         if self.tool_count == 0:        
             self.return_schema = []        
             intermediate_steps = []   
-            # self.correct_trajectory = []    
-            # self.checkpoints = {}   
             self.thought_execution_chain = []  
             self.web_schema = []  
-
-        # # Check if the query is valid
-        # answerable_with_tools, reason = self._check_if_answerable_with_tools(inputs['input'])
-        # if not answerable_with_tools :
-        #     self.thought_execution_chain.append(reason)
-        #     next_step_output = AgentFinish(return_values = {'output':''} ,
-        #                                  log ='I now know the final answer.\nFinal Answer : Set of tools not feasible to answer the query!!')
-        #     return self._return(
-        #             next_step_output, [], run_manager=run_manager
-        #         )                             
-        
+                                
         
         # Construct a mapping of tool name to tool for easy lookup
         name_to_tool_map = {tool.name: tool for tool in self.tools}
@@ -62,21 +52,12 @@ class CustomAgentExecutor(AgentExecutor):
         time_elapsed = 0.0
         start_time = time.time()
         
-        # We now enter the agent loop (until it returns something).
-        # self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
-        #                                                        user_query=inputs['input'])
-        
-        
+        # updating the prompt with the user query
         self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
-                                                               user_query=inputs['input'] , tool_task = '')
+                                                               user_query=inputs['input'])
         
 
         while self._should_continue(iterations, time_elapsed):
-            self.tool_gate += 1
-            if(self.tool_gate&1 != 0):
-                self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
-                                                               user_query=inputs['input'] , tool_task = '')
-            
             next_step_output = self._take_next_step(
                                                     name_to_tool_map,
                                                     color_mapping,
@@ -86,10 +67,11 @@ class CustomAgentExecutor(AgentExecutor):
                                                 )
             if next_step_output == None:
                 continue
+            
 
             if isinstance(next_step_output, AgentFinish):
                 self.tool_count = 0       
-                with open ('testing_dag/web_schema.json' , 'w') as f:
+                with open ('Intelligence/dag_planner/web_schema.json' , 'w') as f:
                     json.dump(self.web_schema , f)      
                 return self._return(
                     next_step_output, intermediate_steps, run_manager=run_manager
@@ -292,5 +274,7 @@ agent_executor = CustomAgentExecutor(
                                 handle_parsing_errors=True,
                                 )
 
-a =  agent_executor({"input":'Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them '})
-print(a)
+# a =  agent_executor({"input":'Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them '})
+# a =  agent_executor({"input":'Summarise work item TKT-123'})
+
+# print(a)

@@ -20,7 +20,7 @@ class Web_Scrapper :
             }
         self.response = requests.get(self.url, headers=headers)
         self.soup = BeautifulSoup(self.response.text, 'html.parser')
-        self.tags = ['h1', 'h2', 'h3','h4', 'p', 'ul', 'ol', 'a', 'img', 'figcaption']
+        self.tags = ['h1', 'h2', 'h3','h4', 'p', 'ul', 'ol', 'a', 'img', 'figcaption', 'video', 'iframe']
         self.restricted = ['read more' , 'https://', 'http://', 'www.', 
                         'about','careers', 'advertise' ,'newsletter', 
                         'references', 'external links', 'see also', 'about us', 'contact us', 'bibliography']
@@ -63,23 +63,27 @@ class Web_Scrapper :
                 chunk['type'] = 'hyperlink'
                 chunk['text'] = element.text.strip()
                 chunk['url'] = element.get('href', '')  # Use .get() to handle missing 'href' attribute
-            # If it's an image
-            elif element.name == 'img':
+                
+            # If it's an image/ video, iframe
+            elif element.name ==  'img':
                 chunk['type'] = 'image'
-                chunk['description'] = element.get('alt', '')  # Use .get() to handle missing 'alt' attribute
+                chunk['description'] = element.get('alt', '')   # Use .get() to handle missing 'alt' attribute
                 chunk['source'] = element.get('src', '')  # Use .get() to handle missing 'src' attribute
             
-            self.chunks.append(chunk)
+            if len(chunk)>0:
+                self.chunks.append(chunk)
         
         return self.chunks
 
     def create_dict(self):
         self.scrape_blog()
-            
         self.blog_dict = defaultdict(list)
         
         for idx ,chunk in enumerate(self.chunks):
-            self.blog_dict[chunk['type']].append(idx)
+            try: 
+                self.blog_dict[chunk['type']].append(idx)
+            except KeyError:
+                logger.error(f'Error in creating dict : {chunk}')
         return self.blog_dict
     
     def filter_chunks(self):
@@ -130,7 +134,7 @@ class Web_Scrapper :
         2-) Drop the headings, as they are of no use now. (may be useful for future reference in metadata)
         3-) Relatings images with the paragraphs, lists.
             - binary search to go to the images nearer to paragraph as per the orientation of the web-page.
-            - Perform string matching of image name on left and right side of the paragraph.
+            - Perform string matching of image name on left and right side of the paragraph.    X
         4-) Regarding Links : 
             - binary search though index of links to get to links closer to para/list.
             - Use them for key-word extraction.
@@ -156,15 +160,8 @@ class Web_Scrapper :
             meta_data['imgs'] = []
             # checking img on left side
             if(closest_img_idx-1 >= 0):
-                img_name = self.chunks[img_idxs[closest_img_idx-1]]['source'].split('/')[-1]
-                # overlap = self.calculate_word_overlap_percentage(self.chunks[idx]['content'], img_name)
-                # if overlap > 10:
                 meta_data['imgs'].append(self.chunks[img_idxs[closest_img_idx-1]]['source'])                    
-            # checking img on right side
             if(closest_img_idx < len(img_idxs)):
-                img_name = self.chunks[img_idxs[closest_img_idx]]['source'].split('/')[-1]
-                # overlap = self.calculate_word_overlap_percentage(self.chunks[idx]['content'], img_name)
-                # if overlap > 10:
                 meta_data['imgs'].append(self.chunks[img_idxs[closest_img_idx]]['source'])
             
             # getting to nearest set of links
@@ -193,9 +190,7 @@ class Web_Scrapper :
             doc.excluded_llm_metadata_keys = ["external_ref" , "imgs", "key_words", 'source']
             doc.excluded_embed_metadata_keys = ["external_ref" , "imgs", 'source' ]
             list_of_docs.append(doc)
-            logger.debug(f'text : {doc.text[:50]}...     word_count : {len(doc.text.split())}')
-            logger.debug(f"meta_data : {len(doc.metadata['key_words'])}")
-            print('-'*100)
+
         return list_of_docs
             
             
@@ -219,23 +214,6 @@ class Web_Scrapper :
         return new_combined_indices
         
         
-    ## SCOPE OF IMPROVEMENTS          
-    def calculate_word_overlap_percentage(self, s: str, string2):
-        # Split both strings into words
-        words1 = set(s.lower().split())
-        # print(string2 , end = '\n\n\n\n\n')
-        words2 = set(string2.lower().split())
-                
-        # Calculate the number of words from string1 that are present in string2
-        common_words_count = len(words1.intersection(words2))
         
-        # Calculate the percentage
-        print(words1)
-        percentage = (common_words_count / len(words1)) * 100 if words1 else 0
-        print('percentage : ', percentage)
-        return percentage
-        
-        
-        
-# scr = Web_Scrapper('https://blog.google/technology/developers/google-gemma-2/')
-# scr.create_docs()           
+scr = Web_Scrapper('https://www.yogajournal.com/poses/yoga-by-benefit/high-blood-pressure/yoga-for-high-blood-pressure/')
+scr.create_docs()           
