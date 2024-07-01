@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext } from "react";
-import classes from "@/components/Notification/Notifications.module.css";
+import classes from "@/components/Notification/notifications.module.css";
 import Notification from "./Notification";
 import NotificationContext from "@/contexts/NotificationContext";
 

@@ -3,7 +3,7 @@ import { AiOutlineInstagram, AiOutlineLinkedin } from "react-icons/ai";
 import { FaFacebook } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import Link from "next/link";
-import classes from "@/components/ContactLogo/ContactLogo.module.css";
+import classes from "@/components/ContactLogo/contactLogo.module.css";
 
 interface ContactLogoProps {
   size: string;
