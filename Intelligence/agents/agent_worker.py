@@ -51,7 +51,6 @@ from llama_index.core.prompts.mixin import PromptDictType
 from llama_index.core.settings import Settings
 from llama_index.core.tools import BaseTool, ToolOutput, adapt_to_async_tool
 from llama_index.core.tools.types import AsyncBaseTool
-from llama_index.core.Intelligence.utils import print_text
 
 
 def add_user_step_to_reasoning(
@@ -190,26 +189,7 @@ class MyAgentWorker(BaseAgentWorker):
             self._react_chat_formatter.system_header = sys_prompt.template
 
     def initialize_dag(self, task: Task, **kwargs: Any) -> TaskStep:
-        """Initialize step from task."""
-        sources: List[ToolOutput] = []
-        current_reasoning: List[BaseReasoningStep] = []
-        # temporary memory for new messages
-        new_memory = ChatMemoryBuffer.from_defaults()
-
-        # initialize task state
-        task_state = {
-            "sources": sources,
-            "current_reasoning": current_reasoning,
-            "new_memory": new_memory,
-        }
-        task.extra_state.update(task_state)
-
-        return TaskStep(
-            task_id=task.task_id,
-            step_id=str(uuid.uuid4()),
-            input=task.input,
-            step_state={"is_first": True},
-        )
+        pass
 
     def get_tools(self, input: str) -> List[AsyncBaseTool]:
         """Get tools."""

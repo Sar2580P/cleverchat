@@ -5,15 +5,12 @@ from langchain.schema.language_model import BaseLanguageModel
 from langchain.prompts import PromptTemplate
 from langchain.tools.base import BaseTool
 from langchain.agents.mrkl.base import ZeroShotAgent
-from langchain.agents.agent import Agent, AgentOutputParser
-from testing_dag.templates_prompts import PAST_MISTAKES,PREFIX, FORMAT_INSTRUCTIONS, SUFFIX
-# from testing_dag.tool_collection import get_relevant_tools
-# from testing_dag.tool_collection import *
-from langchain.chains import LLMChain
+from langchain.agents.agent import  AgentOutputParser
+from Intelligence.dag_planner.templates_prompts import PREFIX, FORMAT_INSTRUCTIONS, SUFFIX
+from langchain.chains.llm import LLMChain
 from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
-from icecream import ic
-from llm_utility import llm
-
+from Intelligence.utils.llm_utils import llm
+from Intelligence.utils.misc_utils import logger
 
 class PersonalAgent(ZeroShotAgent):
     
@@ -21,43 +18,13 @@ class PersonalAgent(ZeroShotAgent):
     @classmethod
     def create_prompt(
         cls,
-        
         user_query: str ,
         tools: Sequence[BaseTool] ,
-        tool_task: str ,
-        wrong_tool_name: str =  None,
         prefix: str = PREFIX,
         suffix: str = SUFFIX,
-        # mistakes :str = PAST_MISTAKES,
         format_instructions: str = FORMAT_INSTRUCTIONS,
         input_variables: Optional[List[str]] = None,
     ) -> PromptTemplate:
-
-        # if tool_task == '':
-        #     mistakes = ''
-
-        # else:
-        #     # past_mistakes = analyse(user_query,wrong_tool_name)
-        # print("\033[91m {}\033[00m" .format('Attaching past mistakes to the prompt... (agent) for \ntool_task : {tool_task}'.format(tool_task=tool_task )))
-
-        # tool_task = tool_task.strip('\n').strip()
-        # if '\n' in tool_task:
-        #     tool_task = tool_task.split('\n')[0]
-
-
-            
-            # past_mistakes = analyse(user_query=user_query,wrong_tool_name=wrong_tool_name, tool_task=tool_task)
-            # formatted_mistakes = ''
-            
-            # if past_mistakes == 'No mistakes found  relevant to this query' or past_mistakes == []:
-            #     formatted_mistakes = 'No mistakes found  relevant to this query'
-            # else :
-            #     for mistake in past_mistakes:
-            #         formatted_mistakes += mistake.metadata['learning'] 
-    
-            # mistakes = mistakes.format(mistakes = formatted_mistakes)
-            # print(mistakes)
-        #________________________________________________________________________________
 
         tool_strings = "\n".join([f"{tool.name}: {tool.description}" for tool in tools])
         tool_names = ", ".join([tool.name for tool in tools])
@@ -72,8 +39,10 @@ class PersonalAgent(ZeroShotAgent):
             input_variables = ["input", "agent_scratchpad"]
         
         prompt =  PromptTemplate(template=template, input_variables=input_variables)
-        # if tool_task != '':
-        #     print('****',prompt.template.format(input=user_query, agent_scratchpad=''))
+        
+        # if user_query != None:
+        #     prompt.template = prompt.template.format(input=user_query, agent_scratchpad='')
+           
         return prompt
     #________________________________________________________________________________________________________________________________
     @classmethod
@@ -81,7 +50,7 @@ class PersonalAgent(ZeroShotAgent):
         cls,
         llm: BaseLanguageModel,
         tools: Sequence[BaseTool],
-        user_query: str = '',
+        user_query: str = None,
         callback_manager: Optional[BaseCallbackManager] = None,
         output_parser: Optional[AgentOutputParser] = None,
         prefix: str = PREFIX,
@@ -89,7 +58,7 @@ class PersonalAgent(ZeroShotAgent):
         format_instructions: str = FORMAT_INSTRUCTIONS,
         input_variables: Optional[List[str]] = None,
         **kwargs: Any,
-    ) -> Agent:
+    ) -> 'PersonalAgent':
         """Construct an agent from an LLM and tools."""
         cls._validate_tools(tools)
 
@@ -100,8 +69,6 @@ class PersonalAgent(ZeroShotAgent):
             suffix=suffix,
             format_instructions=format_instructions,
             input_variables=input_variables,
-            wrong_tool_name = None,
-            tool_task = '',
         )
         llm_chain = LLMChain(
             llm=llm,
@@ -119,13 +86,15 @@ class PersonalAgent(ZeroShotAgent):
         )
 
 #________________________________________________________________________________________________________________________________   
-from testing_dag.tools import GetSimilarWorkItems, Summarize, Prioritize, SearchObjectByName, CreateActionableTasksFromText
+from Intelligence.dag_planner.tools import *
 task_tools = [
     SearchObjectByName() ,
     GetSimilarWorkItems() , 
     Summarize() ,
     Prioritize(), 
-    CreateActionableTasksFromText()
+    CreateActionableTasksFromText(), 
+    DiabetesDoctor(),
+    BPDoctor()
 ]
 
 agent_obj = PersonalAgent.from_llm_and_tools(
