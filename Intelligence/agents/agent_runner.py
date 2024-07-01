@@ -31,12 +31,14 @@ from llama_index.core.objects.base import ObjectRetriever
 from llama_index.core.settings import Settings
 from llama_index.core.tools import BaseTool, ToolOutput
 from llama_index.core.prompts.mixin import PromptMixinType
-from agents.agent_worker import MyAgentWorker
-from testing_dag.DAG import agent_executor
-from testing_dag.node import Node ,create_graph_from_nodes_json
+from Intelligence.agents.agent_worker import MyAgentWorker
+from Intelligence.dag_planner.DAG import agent_executor
+from Intelligence.dag_planner.agent import task_tools
+from Intelligence.dag_planner.node import Node ,create_graph_from_nodes_json
 from collections import deque
 from Intelligence.utils.misc_utils import logger, assert_
-
+import networkx as nx
+import matplotlib.pyplot as plt
 
 class MyAgentRunner(AgentRunner):
     def __init__(
@@ -62,7 +64,7 @@ class MyAgentRunner(AgentRunner):
         if context:
             react_chat_formatter = ReActChatFormatter.from_context(context)
 
-        step_engine = MyAgentWorker.from_tools(
+        step_engine = ReActAgentWorker.from_tools(
             tools=tools,
             tool_retriever=tool_retriever,
             llm=llm,
@@ -79,7 +81,6 @@ class MyAgentRunner(AgentRunner):
             llm=llm,
             callback_manager=callback_manager,
         )
-        print(f"inside MyAgent, agent_worker = {self.agent_worker}")
 
     @classmethod
     def from_tools(
@@ -180,8 +181,8 @@ class MyAgentRunner(AgentRunner):
     
     def create_dag_task(self, input: str, **kwargs: Any) -> Task:
         agent_executor({'input' : input})
-        dag_setup :dict[str, Any] = create_graph_from_nodes_json('testing_dag/web_schema.json')
-        
+        dag_setup :dict[str, Any] = create_graph_from_nodes_json('Intelligence/dag_planner/web_schema.json')
+        logger.debug('\n---------Filling nodes topo-bfs manner--------\n')
         # applying topo-bfs starting with nodes having 0 indegree
         deq = deque()
         
@@ -190,19 +191,54 @@ class MyAgentRunner(AgentRunner):
             if in_deg == 0:
                 deq.append(i)
                 
-        instance_display_order = []
+        self.instance_display_order = []
         while len(deq)>0:
             node_idx = deq.popleft()
-            instance_display_order.append(node_idx)
+            
             node_instance:Node = dag_setup['instance_mapping'][node_idx]
             node_instance.run_node()
-            logger.info(f"tool_name : {node_instance.tool_name} , input : {node_instance.tool_input} , output : {node_instance.output}\n\n")
+            self.instance_display_order.append(node_instance)
+            # logger.info(f"tool_name : {node_instance.tool_name} , input : {node_instance.tool_input} , output : {node_instance.output}\n\n")
             for child_idx in node_instance.children_node_idxs:
                 dag_setup['in_deg'][child_idx] -= 1
                 if dag_setup['in_deg'][child_idx] ==0 : 
                     deq.append(child_idx)
         
-        logger.debug(f'display_order : {instance_display_order}')
-        logger.debug('\n---------Completed processing all nodes--------\n')
-        return 
+        logger.debug('\n---------Completed filling all nodes--------\n')
+        return self.instance_display_order
+    
+    def draw_dag_planning_graph(self, nodes: List[Node], **kwargs: Any):
+        G = nx.DiGraph()
+
+        for node in nodes:
+            sanitized_tool_input = node.tool_input.replace('$', r'\$')
+            G.add_node(node.usage_idx, label=f"Tool_Name= {node.tool_name}\n Tool_Input= {sanitized_tool_input}\nIndex= {node.usage_idx}")
+
+        # Add edges to the graph based on parent-child relationships
+        for node in nodes:
+            for child_idx in node.children_node_idxs:
+                G.add_edge(node.usage_idx, child_idx)
+
+        # Set node positions in the graph
+        pos = nx.spring_layout(G)
+
+        # Create figure and axis
+        fig, ax = plt.subplots(figsize=(12, 8))
+
+        # Draw the nodes
+        node_labels = nx.get_node_attributes(G, 'label')
+        nx.draw_networkx_nodes(G, pos, node_size=3000, node_color='lightblue', node_shape='s', ax=ax)
+        nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=8, verticalalignment='center', ax=ax)
+
+        # Draw the edges
+        nx.draw_networkx_edges(G, pos, arrowstyle='->', arrowsize=10, connectionstyle='arc3,rad=0.1', ax=ax)
+
+        # Display the graph
+        plt.title('Diagram of DAG Planning')
+        plt.savefig('Intelligence/dag_planner/dag_planning_graph.png')
         
+
+
+A = MyAgentRunner.from_tools(tools = task_tools, llm = Settings.llm)
+x = A.create_dag_task('Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them ')
+A.draw_dag_planning_graph(x)

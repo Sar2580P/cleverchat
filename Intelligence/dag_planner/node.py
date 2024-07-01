@@ -3,7 +3,7 @@ from typing import List, Dict, Union
 import re
 from Intelligence.utils.misc_utils import assert_, logger
 import json
-from testing_dag.tools import *
+from Intelligence.dag_planner.tools import *  
 
 def get_tool_from_tool_name(tool_name: str):
     name_to_instance = {
@@ -11,7 +11,9 @@ def get_tool_from_tool_name(tool_name: str):
         'get_similar_work_items' : GetSimilarWorkItems() , 
         'summarize_objects' : Summarize() ,
         'prioritize_objects' : Prioritize(), 
-        'create_actionable_tasks_from_text' : CreateActionableTasksFromText()
+        'create_actionable_tasks_from_text' : CreateActionableTasksFromText(), 
+        "Specialized Diabetes Doctorr" : DiabetesDoctor(), 
+        "Specialized Blood Pressure Doctor" : BPDoctor()
     }
     return name_to_instance[tool_name]
 
@@ -129,36 +131,36 @@ def create_graph_from_nodes_json(json_data: Union[str, List[Dict]]) -> Dict[int,
 # node1.run_node()
 # print('\n\n\n\n', node1)
 
-from testing_dag.DAG import agent_executor
-from collections import deque
-from Intelligence.utils.misc_utils import logger, assert_
+# from Intelligence.dag_planner.DAG import agent_executor
+# from collections import deque
+# from Intelligence.utils.misc_utils import logger, assert_
 
-def create_dag_task(input: str, **kwargs: Any):
-    agent_executor({'input' : input})
-    dag_setup :dict[str, Any] = create_graph_from_nodes_json('testing_dag/web_schema.json')
+# def create_dag_task(input: str, **kwargs: Any):
+#     agent_executor({'input' : input})
+#     dag_setup :dict[str, Any] = create_graph_from_nodes_json('Intelligence/dag_planner/web_schema.json')
     
-    # applying topo-bfs starting with nodes having 0 indegree
-    deq = deque()
-    
-    # assuming : no-cycles present
-    for i, in_deg in enumerate(dag_setup['in_deg']):
-        if in_deg == 0:
-            deq.append(i)
+#     # applying topo-bfs starting with nodes having 0 indegree
+#     deq = deque()
+#     logger.debug('\n---------Filling nodes topo-bfs manner--------\n')
+#     # assuming : no-cycles present
+#     for i, in_deg in enumerate(dag_setup['in_deg']):
+#         if in_deg == 0:
+#             deq.append(i)
             
-    instance_display_order = []
-    while len(deq)>0:
-        node_idx = deq.popleft()
-        instance_display_order.append(node_idx)
-        node_instance:Node = dag_setup['instance_mapping'][node_idx]
-        node_instance.run_node()
-        logger.info(f"tool_name : {node_instance.tool_name} , input : {node_instance.tool_input} , output : {node_instance.output}\n\n")
-        for child_idx in node_instance.children_node_idxs:
-            dag_setup['in_deg'][child_idx] -= 1
-            if dag_setup['in_deg'][child_idx] ==0 : 
-                deq.append(child_idx)
+#     instance_display_order = []
+#     while len(deq)>0:
+#         node_idx = deq.popleft()
+#         instance_display_order.append(node_idx)
+#         node_instance:Node = dag_setup['instance_mapping'][node_idx]
+#         node_instance.run_node()
+#         logger.info(f"tool_name : {node_instance.tool_name} \ninput : {node_instance.tool_input} \noutput : {node_instance.output}\n\n")
+#         for child_idx in node_instance.children_node_idxs:
+#             dag_setup['in_deg'][child_idx] -= 1
+#             if dag_setup['in_deg'][child_idx] ==0 : 
+#                 deq.append(child_idx)
     
-    logger.debug(f'display_order : {instance_display_order}')
-    logger.debug('\n---------Completed processing all nodes--------\n')
-    return 
+#     logger.debug(f'display_order : {instance_display_order}')
+#     logger.debug('\n---------Completed filling all nodes--------\n')
+#     return 
 
-create_dag_task(input='Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them ')
+# create_dag_task(input='Tell me exercises and home remedies for high blood pressure? what are the symptoms of diabetes?')

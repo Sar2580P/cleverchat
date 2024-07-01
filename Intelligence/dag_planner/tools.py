@@ -4,7 +4,8 @@ from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
 )
-# from llm_utility import llm
+from Intelligence.retrieval_response.retriever import Retriever, ResponseSynthesizer
+from Intelligence.utils.misc_utils import pr
 
 class GetSimilarWorkItems(BaseTool):
     name = "get_similar_work_items"
@@ -38,7 +39,7 @@ class Summarize(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('shri radhe, inside summarize_objects') 
+        print('inside summarize_objects') 
         return {'tool_response' : 'used Summarize'}
     async def _arun(
         self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
@@ -56,7 +57,7 @@ class Prioritize(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('shri radhe, inside prioritize_objects') 
+        print('inside prioritize_objects') 
         return {'tool_response' : 'used Prioritize'}
     async def _arun(
         self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
@@ -74,7 +75,7 @@ class SearchObjectByName(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('shri radhe, inside search_object_by_name')
+        print('inside search_object_by_name')
         return {'tool_response' : 'used search_object_by_name'}
 
     async def _arun(
@@ -94,7 +95,7 @@ class CreateActionableTasksFromText(BaseTool):
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-        print('shri radhe, inside create_actionable_tasks_from_text') 
+        print('inside create_actionable_tasks_from_text') 
         return {'tool_response' : 'used CreateActionableTasksFromText'}
     
     async def _arun(
@@ -103,3 +104,60 @@ class CreateActionableTasksFromText(BaseTool):
         """Use the tool asynchronously."""
         raise NotImplementedError("custom_search does not support async")
     
+class DiabetesDoctor(BaseTool):
+    name = "Specialized Diabetes Doctor"
+    description = '''
+    - This tool is helpful for queries related to medical diagnosis, diseases, and doctors.
+    - The tool specializes in knowledge related to diabetes disease.
+    '''
+    retriever: Retriever = None
+    response_generator: ResponseSynthesizer = None
+    def __init__(self):
+        super().__init__()
+        self.retriever = Retriever(config_file_path='Intelligence/configs/retrieval.yaml', index_path='blood_sugar_medical_db')
+        self.response_generator = ResponseSynthesizer.initialize(config_file_path='Intelligence/configs/retrieval.yaml', 
+                                                                 retriever=self.retriever)
+    
+    def _run(
+        self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
+    ) -> Any:
+        response, metadata = self.response_generator.respond_query(query)
+        return {'tool_response' : response, 
+                'response_metadata' : metadata}
+    
+    async def _arun(
+        self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
+    ) -> str:
+        """Use the tool asynchronously."""
+        raise NotImplementedError("custom_search does not support async")
+    
+
+
+class BPDoctor(BaseTool):
+    name = "Specialized Blood Pressure Doctor"
+    description = '''
+    - This tool is helpful for queries related to medical diagnosis, diseases, and doctors.
+    - The tool specializes in knowledge related to diabetes or blood pressure disease.
+    '''
+    
+    retriever: Retriever = None
+    response_generator: ResponseSynthesizer = None
+    def __init__(self):
+        super().__init__()
+        self.retriever = Retriever(config_file_path='Intelligence/configs/retrieval.yaml', index_path='blood_pressure_medical_db')
+        self.response_generator = ResponseSynthesizer.initialize(config_file_path='Intelligence/configs/retrieval.yaml', 
+                                                                 retriever=self.retriever)
+    
+    def _run(
+        self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
+    ) -> Any:
+
+        response, metadata = self.response_generator.respond_query(query)
+        return {'tool_response' : response, 
+                'response_metadata' : metadata}
+    
+    async def _arun(
+        self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
+    ) -> str:
+        """Use the tool asynchronously."""
+        raise NotImplementedError("custom_search does not support async")

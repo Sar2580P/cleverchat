@@ -25,3 +25,14 @@ refine_template = (
     "If the context isn't useful, return the original answer.\n"
     "Refined Answer: "
 )
+
+translation_template = '''
+The original content is in English language.
+
+ORIGINAL CONTENT:
+{original_content}
+-----------------------------------------------
+
+You need to translate the content to {lang} language.
+Answer:
+'''

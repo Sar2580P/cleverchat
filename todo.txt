@@ -5,14 +5,33 @@
 - Re-ranker ---> done jugad of using BM25 for ranking after retrieval from vector_store
 - Teacher Tool : 
     - Implement Quiz setup   ---> done
-- Implement Language Module
-- Implement query enhancer Module
-- Pin images to relevant para   
-- Create 20+ vec-db specialists.
-- Connect these tools to DAG
+- Implement Language Module  ---> done
+- Debug the agent... its scratchpad is not updating    ---> done
+- Implement query enhancer Module --2     ----> skipping... leading to 1 more llm call (think it later)
+- Pin images to relevant para   --3
+- Create 20+ vec-db specialists.  --4
+- Connect these tools to DAG --7
 
+
+# work on captions, videos
 
 
 Post Processing : 
-- MetadataReplacementPostProcessor
-- 
+- MetadataReplacementPostProcessor --6
+-------------------------------------------------------------------------------------------------------
+
+
+
+cd web
+npm install
+npm run build
+npm start
+
+cd api
+python -m venv .env
+.env/Scripts/activate
+pip install -r requirments.txt
+python manage.py runserver
+
+.env file in web folder
+NEXT_PUBLIC_BACKEND_URL= http://127.0.0.1:8000

@@ -20,8 +20,16 @@ from llama_index.core.base.llms.types import (
     ChatResponse,
 )
 from llama_index.core.utilities.gemini_utils import merge_neighboring_same_role_messages
+from llama_index.core.prompts import PromptTemplate
 load_dotenv(find_dotenv()) # read local .env file
 from Intelligence.utils.misc_utils import pr
+from Intelligence.retrieval_response.templates import translation_template
+
+
+# langchain utilities for llm
+from langchain_google_genai import ChatGoogleGenerativeAI
+llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=os.getenv("GEMINI_API_KEY"))
+
 
 
 class Delayed_LLM(Gemini):
@@ -135,20 +143,25 @@ def use_llm(x):
     response = Settings.llm.complete(x)
     return response.text, response.additional_kwargs
 
+def translate(content, lang):
+    translation_prompt = PromptTemplate(translation_template).partial_format(lang = lang, original_content = content)                                                      
+    response = Settings.llm.complete(translation_prompt)
+    return response.text
+
 def embed(x):
     return Settings.embed_model.get_text_embedding(x)
 
 
-template = "Statement : {statement}\n ----------------------------\n\n\
-INSTRUCTIONS : \nYou need to do NER in above text into tags like : ['Disease', 'Medicine' , 'Anatomical_Region'] and return a list containing tuple of (NER-type , name, anatomical_description in < 6 words)\n \
-    \nstart : index of starting letter of word\nend : index of last letter of word  \
-Response: \n"
+# template = "Statement : {statement}\n ----------------------------\n\n\
+# INSTRUCTIONS : \nYou need to do NER in above text into tags like : ['Disease', 'Medicine' , 'Anatomical_Region'] and return a list containing tuple of (NER-type , name, anatomical_description in < 6 words)\n \
+#     \nstart : index of starting letter of word\nend : index of last letter of word  \
+# Response: \n"
     
-text = '''
-The 55-year-old male patient presented with symptoms of Myocarditis and subsequently developed Atrial Fibrillation. 
-He was administered Amiodarone to manage the arrhythmia. Additionally, his history revealed Type 2 Diabetes Mellitus, 
-controlled with Metformin and occasional use of Insulin Glargine. During the examination, signs of Chronic Obstructive Pulmonary Disease (COPD) were noted, for which he was already on Tiotropium. Recently, he experienced severe joint pain attributed to Rheumatoid Arthritis, 
-being treated with Methotrexate and Etanercept. To address his Hypertension, Amlodipine and Lisinopril were prescribed. Moreover, the patient had a previous episode of Deep Vein Thrombosis (DVT), currently managed with Warfarin. In light of his persistent Gastroesophageal Reflux Disease (GERD), he was taking Omeprazole. 
-A comprehensive review of his medication regimen was essential to prevent potential drug interactions and ensure optimal therapeutic outcomes, given the complexity of his multiple chronic conditions.'''
-# prompt = template.format(statement = text)
-# print(use_llm(prompt)[0])
+# text = '''
+# The 55-year-old male patient presented with symptoms of Myocarditis and subsequently developed Atrial Fibrillation. 
+# He was administered Amiodarone to manage the arrhythmia. Additionally, his history revealed Type 2 Diabetes Mellitus, 
+# controlled with Metformin and occasional use of Insulin Glargine. During the examination, signs of Chronic Obstructive Pulmonary Disease (COPD) were noted, for which he was already on Tiotropium. Recently, he experienced severe joint pain attributed to Rheumatoid Arthritis, 
+# being treated with Methotrexate and Etanercept. To address his Hypertension, Amlodipine and Lisinopril were prescribed. Moreover, the patient had a previous episode of Deep Vein Thrombosis (DVT), currently managed with Warfarin. In light of his persistent Gastroesophageal Reflux Disease (GERD), he was taking Omeprazole. 
+# A comprehensive review of his medication regimen was essential to prevent potential drug interactions and ensure optimal therapeutic outcomes, given the complexity of his multiple chronic conditions.'''
+# # prompt = template.format(statement = text)
+# # print(use_llm(prompt)[0])
