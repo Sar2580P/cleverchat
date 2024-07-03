@@ -26,6 +26,12 @@ langchain-google-genai = "^1.0.6"
 langchain-community = "^0.2.5"
 matplotlib = "^3.9.0"
 llama-index-retrievers-bm25 = "^0.1.4"
+asgiref = "3.8.1"
+django = "5.0.6"
+django-cors-headers = "4.4.0"
+djangorestframework = "3.15.2"
+sqlparse = "0.5.0"
+tzdata = "2024.1"
 
 
 [tool.poetry.group.dev.dependencies]

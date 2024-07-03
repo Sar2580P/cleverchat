@@ -3,13 +3,7 @@ from llama_index.core import get_response_synthesizer
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core.query_engine import RetrieverQueryEngine
 from Intelligence.utils.misc_utils import pr
-from Intelligence.utils.llm_utils import Settings
 
-
-pipeline = Pipeline()
-pipeline.ingest_webdata_to_vecdb(path='Intelligence/data_sources/diabetes.txt', name='blood_sugar_medical')
-
-Settings.llm.get_stats()
 # index = Vec_Store.get_vectorstore(path='vector_store/medical_db')
 # retriever = VectorIndexRetriever(
 #     index=index,

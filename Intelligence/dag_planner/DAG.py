@@ -6,7 +6,6 @@ from langchain.agents.agent import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
 import json
-from Intelligence.dag_planner.agent import agent_obj, task_tools
 from langchain.agents.mrkl.base import ZeroShotAgent
 from langchain.output_parsers import OutputFixingParser
 from Intelligence.utils.misc_utils import logger, assert_, pr
@@ -23,7 +22,6 @@ class CustomAgentExecutor(AgentExecutor):
     tool_gate : int = 0
     web_schema: List[Dict] = []
     agent: ZeroShotAgent
-    
     #_______________________________________________________________________________________________
     def _call(
         self,
@@ -266,13 +264,6 @@ class CustomAgentExecutor(AgentExecutor):
 
 #____________________________________________________________________________________________________
 
-agent_executor = CustomAgentExecutor(
-                                agent=agent_obj ,
-                                tools= task_tools,
-                                verbose=True,
-                                return_intermediate_steps=True,
-                                handle_parsing_errors=True,
-                                )
 
 # a =  agent_executor({"input":'Get all work items similar to TKT-123, summarize them, create issues from that summary, and prioritize them '})
 # a =  agent_executor({"input":'Summarise work item TKT-123'})

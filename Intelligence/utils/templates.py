@@ -35,7 +35,7 @@ INFORMATION :
 ----------------------------------------------------------------
 INSTRUCTIONS :
 1. Return a list of dictionaries, each dictionary should have following format : 
-      {{'question' : 'question_text' , 'options' : ['option1', 'option2', 'option3', 'option4'] , 'answer' : 'correct_option'}}
+      {{"question" : "question_text" , "options" : ["option1", "option2", "option3", "option4"] , "answer" : "correct_option"}}
       
 Answer : 
 '''

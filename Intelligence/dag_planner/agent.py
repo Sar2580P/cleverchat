@@ -8,7 +8,6 @@ from langchain.agents.mrkl.base import ZeroShotAgent
 from langchain.agents.agent import  AgentOutputParser
 from Intelligence.dag_planner.templates_prompts import PREFIX, FORMAT_INSTRUCTIONS, SUFFIX
 from langchain.chains.llm import LLMChain
-from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
 from Intelligence.utils.llm_utils import llm
 from Intelligence.utils.misc_utils import logger
 
@@ -61,7 +60,7 @@ class PersonalAgent(ZeroShotAgent):
     ) -> 'PersonalAgent':
         """Construct an agent from an LLM and tools."""
         cls._validate_tools(tools)
-
+        print(tools)
         prompt = cls.create_prompt(
             tools=tools,
             prefix=prefix,
@@ -83,20 +82,4 @@ class PersonalAgent(ZeroShotAgent):
             allowed_tools=tool_names,
             output_parser=_output_parser,
             **kwargs,
-        )
-
-#________________________________________________________________________________________________________________________________   
-from Intelligence.dag_planner.tools import *
-task_tools = [
-    SearchObjectByName() ,
-    GetSimilarWorkItems() , 
-    Summarize() ,
-    Prioritize(), 
-    CreateActionableTasksFromText(), 
-    DiabetesDoctor(),
-    BPDoctor()
-]
-
-agent_obj = PersonalAgent.from_llm_and_tools(
-            llm = llm, tools = task_tools, output_parser=ReActSingleInputOutputParser()
-            )
+        )   

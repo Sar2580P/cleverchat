@@ -22,12 +22,12 @@ import ast
 
 class ReadingInfo(BaseModel):
     file_path: Path
-    base_dir: Path = Path('tools/teacher')
+    base_dir: Path = Path('../Intelligence/tools/teacher')
     name : str = 'teacher_knowledge_base'
     combine_info_template:str = COMBINE_INFO_TEMPLATE
     content: Optional[str] = None
     scrapper :ClassVar[Web_Scrapper] = Web_Scrapper()
-    chunk_size:int=150
+    chunk_size:int=500
     chunk_overlap:int=40
     aggregated_notes_collection: List[str] = None
     quiz_collection: List[Dict] = None
@@ -42,7 +42,6 @@ class ReadingInfo(BaseModel):
         return v
     
     def create_knowledgebase(self)-> List[Document]:
-        
         # scrape the links 
         with open(self.file_path, 'r') as f:
             web_links = [w.strip() for w in f.readlines()]
@@ -66,31 +65,33 @@ class ReadingInfo(BaseModel):
                 }
                 unsuccessful_trials.append(d)
                 continue
+
         return final_docs
     
     def create_embeddings(self)-> List[TextNode]:
+
         transform_pipeline = Pipeline(chunk_size=self.chunk_size, 
                                       chunk_overlap=self.chunk_overlap)
-        
         embedded_nodes = transform_pipeline.run_ingestion(self.create_knowledgebase())
+
         for i, embedded_node in enumerate(embedded_nodes):
             embedded_node.metadata['rank'] = i
         return embedded_nodes
 
     def get_clustering(self):
         embedded_nodes = self.create_embeddings()
-        
+
         # Step 2: Perform DBScan clustering
         embeddings = np.array([node.embedding for node in tqdm(embedded_nodes, 
                                                                desc='Assembling embeddings for clustering')])
-        
+
         # Step 2: Dimensionality Reduction (Optional but recommended)
         pca = PCA(n_components=100)  # Reduce to 50 dimensions
         reduced_embeddings = pca.fit_transform(embeddings)
-        
+
         # Step 3: Clustering (DBSCAN)
         clustering = DBSCAN(eps=0.5, min_samples=2, metric="cosine").fit(reduced_embeddings)
-        
+
         # Step 3: Create DataFrame for clustering results
         labels = clustering.labels_
         ids = range(len(embedded_nodes))
@@ -123,7 +124,6 @@ class ReadingInfo(BaseModel):
         ax.add_artist(legend1)
         
         plt.savefig(self.base_dir/'clustering_tsne_plot_3d.png')
-        print("3D TSNE plot saved as clustering_tsne_plot_3d.png")
 
     
     def ordering_content(self, df:pd.DataFrame)->List:
@@ -155,13 +155,17 @@ class ReadingInfo(BaseModel):
 
             note = Settings.llm.complete(full_prompt)
             return note
-
-        # Create a list of tasks for asynchronous fetching of notes
-        tasks = [fetch_note(content, self.combine_info_template) for content in tqdm(contents, desc = 'making notes using LLM')]
-        
-        # Await the completion of all tasks
-        self.aggregated_notes_collection = await asyncio.gather(*tasks)
-        return self.aggregated_notes_collection
+        try:
+            # Create a list of tasks for asynchronous fetching of notes
+            tasks = [fetch_note(content, self.combine_info_template) for content in tqdm(contents[:1], desc = 'making notes using LLM')]
+            
+            # Await the completion of all tasks
+            self.aggregated_notes_collection = await asyncio.gather(*tasks)
+            return self.aggregated_notes_collection
+        except Exception as e:
+            pr.red(e)
+            return
+            
     
     async def create_quiz(self, contents: List[BaseNode]= None) -> List[Dict]:
         async def fetch_docs(content: str, template:str) -> str:
@@ -189,7 +193,7 @@ class ReadingInfo(BaseModel):
     
 
 import asyncio
-KB_Creator = ReadingInfo(file_path=Path('Intelligence/tools/teacher/links.txt'))
+KB_Creator = ReadingInfo(file_path=Path('../Intelligence/tools/teacher/links.txt'))
 # x = a.ordering_content(pd.read_csv('Intelligence/tools/teacher/clustering_results.csv'))
 # y = asyncio.run(a.create_notes(x[:1]))
 # z = asyncio.run(a.create_quiz(y))
