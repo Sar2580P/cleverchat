@@ -73,8 +73,3 @@ class Pipeline:
                 json.dump(unsuccessful_trials, f)
         else:
             pr.green('<--- All links scraped and ingested successfully --->')
-                
-            
-
-# p = Pipeline()
-# p.run_ingestion([Document(text='What is diabetes? How can it be cured?')])

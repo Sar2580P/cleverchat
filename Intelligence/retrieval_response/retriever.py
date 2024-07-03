@@ -68,7 +68,7 @@ class ResponseSynthesizer(BaseModel):
     @classmethod
     def initialize(cls, config_file_path: str, retriever:Retriever) -> "ResponseSynthesizer":
 
-        with open(config_file_path, 'r') as f:
+        with open( config_file_path, 'r') as f:
             config = yaml.safe_load(f) if config_file_path.endswith(".yaml") else json.load(f)
 
         response_synthesis_settings = config.get("response_synthesis", {})

@@ -35,3 +35,11 @@ python manage.py runserver
 
 .env file in web folder
 NEXT_PUBLIC_BACKEND_URL= http://127.0.0.1:8000
+
+
+Todo : 
+- resolve clash between metadata and chunk size
+- increase batch size of embedding
+- llm not able to make calls for large  list of docs
+- Create heirarchy of agents and tools
+- calling generate_embeddings async manner

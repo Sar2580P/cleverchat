@@ -215,5 +215,5 @@ class Web_Scrapper :
         
         
         
-scr = Web_Scrapper('https://www.yogajournal.com/poses/yoga-by-benefit/high-blood-pressure/yoga-for-high-blood-pressure/')
-scr.create_docs()           
+# scr = Web_Scrapper('https://www.yogajournal.com/poses/yoga-by-benefit/high-blood-pressure/yoga-for-high-blood-pressure/')
+# scr.create_docs()           

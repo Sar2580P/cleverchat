@@ -1,17 +1,22 @@
 from typing import List
-from Intelligence.tools.teacher.setup import KB_Creator
 import pandas as pd
 import asyncio
 import uuid
+from Intelligence.tools.teacher.setup import KB_Creator
+from Intelligence.utils.misc_utils import pr
 
 def llm_made_links_knowledge_base(links:List[str]):
-    with open('Intelligence/tools/teacher/links.txt', 'w') as f:
+    pr.green(links)
+    with open('../Intelligence/tools/teacher/links.txt', 'w') as f:
         for link in links:
             f.write(link + '\n')
+    pr.red('saved links successfully')
     KB_Creator.get_clustering()
-    ordered_content = KB_Creator.ordering_content(pd.read_csv('Intelligence/tools/teacher/clustering_results.csv'))
+    pr.red('created clustering')
+    ordered_content = KB_Creator.ordering_content(pd.read_csv('../Intelligence/tools/teacher/clustering_results.csv'))
+    pr.red('done ordering')
     final_response:List[str] = asyncio.run(KB_Creator.create_notes(ordered_content))
-                
+    return final_response            
 
 def llm_converse_ai_readme():
     return "Converse AI is a conversational AI platform that enables developers to build, train, and deploy AI-powered chatbots. Converse AI provides a suite of tools to help developers create chatbots that can understand natural language and respond to users in real-time. The platform includes a chatbot builder, a natural language processing engine, and a set of pre-built chatbot templates that developers can use to get started quickly. Converse AI also provides analytics and reporting tools to help developers track the performance of their chatbots and make improvements over time."

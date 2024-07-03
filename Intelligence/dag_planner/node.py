@@ -2,20 +2,8 @@ from pydantic import BaseModel, Field, model_validator
 from typing import List, Dict, Union
 import re
 from Intelligence.utils.misc_utils import assert_, logger
-import json
-from Intelligence.dag_planner.tools import *  
+from Intelligence.tools.tool_instance_mappings import tool_instance_mapping as TIM  
 
-def get_tool_from_tool_name(tool_name: str):
-    name_to_instance = {
-        'search_object_by_name' : SearchObjectByName() ,
-        'get_similar_work_items' : GetSimilarWorkItems() , 
-        'summarize_objects' : Summarize() ,
-        'prioritize_objects' : Prioritize(), 
-        'create_actionable_tasks_from_text' : CreateActionableTasksFromText(), 
-        "Specialized Diabetes Doctorr" : DiabetesDoctor(), 
-        "Specialized Blood Pressure Doctor" : BPDoctor()
-    }
-    return name_to_instance[tool_name]
 
 class Node(BaseModel):
     tool_name: str = Field(..., description="Name of the tool to be used.")
@@ -75,7 +63,7 @@ class Node(BaseModel):
         # final_query_prompt = llm.reframe_query(self.create_prompt())
         final_query_prompt = self.create_prompt()
         # Call retriever to get most similar documents
-        tool_output:dict = get_tool_from_tool_name(self.tool_name).run(final_query_prompt)
+        tool_output:dict = TIM[self.tool_name].run(final_query_prompt)
         
         # Synthesize a final response for this node
         # synthesized_response = llm.synthesize_response(tool_output['tool_response'])
@@ -85,82 +73,3 @@ class Node(BaseModel):
         self.metadata = tool_output.get('metadata', {})
             
         return self.output
-
-
-def create_graph_from_nodes_json(json_data: Union[str, List[Dict]]) -> Dict[int, Node]:
-    if isinstance(json_data, str):
-        # If a path to a JSON file is provided, load the JSON data from the file
-        with open(json_data, 'r') as file:
-            json_data = json.load(file)
-    
-    instance_mapping = {}
-    in_graph :dict[int, List[int]]= {}
-    out_graph :dict[int, List[int]]= {}
-    in_deg = []
-    for idx, item in enumerate(json_data):
-        tool_info = item['tool']
-        node_instance = Node(
-            tool_name=tool_info['tool_name'],
-            tool_input=tool_info['tool_input'],
-            usage_idx=idx,
-            mapping=instance_mapping
-        )
-        in_graph[idx] = node_instance.parent_node_idxs
-        out_graph[idx] = node_instance.children_node_idxs
-        in_deg.append(len(node_instance.parent_node_idxs))
-        instance_mapping[node_instance.usage_idx] = node_instance
-    
-    return {
-        'instance_mapping' : instance_mapping ,
-        'in_graph' : in_graph, 
-        'out_graph' : out_graph , 
-        'in_deg' : in_deg
-    }
-
-# x = create_graph_from_nodes_json('web_schema.json')
-# print(x)
-
-# mapping = {}
-# node1 = Node(
-#     tool_name='get_similar_work_items' , 
-#     tool_input='Get simialr work items to TKT-123', 
-#     usage_idx=0 , 
-#     mapping=mapping
-# )
-# print(node1)
-# node1.run_node()
-# print('\n\n\n\n', node1)
-
-# from Intelligence.dag_planner.DAG import agent_executor
-# from collections import deque
-# from Intelligence.utils.misc_utils import logger, assert_
-
-# def create_dag_task(input: str, **kwargs: Any):
-#     agent_executor({'input' : input})
-#     dag_setup :dict[str, Any] = create_graph_from_nodes_json('Intelligence/dag_planner/web_schema.json')
-    
-#     # applying topo-bfs starting with nodes having 0 indegree
-#     deq = deque()
-#     logger.debug('\n---------Filling nodes topo-bfs manner--------\n')
-#     # assuming : no-cycles present
-#     for i, in_deg in enumerate(dag_setup['in_deg']):
-#         if in_deg == 0:
-#             deq.append(i)
-            
-#     instance_display_order = []
-#     while len(deq)>0:
-#         node_idx = deq.popleft()
-#         instance_display_order.append(node_idx)
-#         node_instance:Node = dag_setup['instance_mapping'][node_idx]
-#         node_instance.run_node()
-#         logger.info(f"tool_name : {node_instance.tool_name} \ninput : {node_instance.tool_input} \noutput : {node_instance.output}\n\n")
-#         for child_idx in node_instance.children_node_idxs:
-#             dag_setup['in_deg'][child_idx] -= 1
-#             if dag_setup['in_deg'][child_idx] ==0 : 
-#                 deq.append(child_idx)
-    
-#     logger.debug(f'display_order : {instance_display_order}')
-#     logger.debug('\n---------Completed filling all nodes--------\n')
-#     return 
-
-# create_dag_task(input='Tell me exercises and home remedies for high blood pressure? what are the symptoms of diabetes?')
