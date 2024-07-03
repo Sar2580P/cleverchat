@@ -10,30 +10,43 @@ import asyncio
 KB_Creator = ReadingInfo(file_path=Path('/home/sarvagya/cleverchat/Intelligence/tools/teacher/links.txt'))
 
 def llm_made_links_knowledge_base(links:List[str]):
-    pr.green(links)
-    with open('/home/sarvagya/cleverchat/Intelligence/tools/teacher/links.txt', 'w') as f:
-        for link in links:
-            f.write(link + '\n')
-    pr.red('saved links successfully')
-    KB_Creator.get_clustering()
+    # pr.green(links)
+    # with open('/home/sarvagya/cleverchat/Intelligence/tools/teacher/links.txt', 'w') as f:
+    #     for link in links:
+    #         f.write(link + '\n')
+    # pr.red('saved links successfully')
+    # KB_Creator.get_clustering()
     pr.red('created clustering')
-    ordered_content = KB_Creator.ordering_content(pd.read_csv('/home/sarvagya/cleverchat/Intelligence/tools/teacher/clustering_results.csv'))
+    ordered_content, _ = KB_Creator.ordering_content(pd.read_csv('/home/sarvagya/cleverchat/Intelligence/tools/teacher/clustering_results.csv'))
     pr.red('done ordering')
     final_response:List[str] = asyncio.run(KB_Creator.create_notes(ordered_content))
     return final_response            
 
 def llm_converse_ai_readme():
-    return "Converse AI is a conversational AI platform that enables developers to build, train, and deploy AI-powered chatbots. Converse AI provides a suite of tools to help developers create chatbots that can understand natural language and respond to users in real-time. The platform includes a chatbot builder, a natural language processing engine, and a set of pre-built chatbot templates that developers can use to get started quickly. Converse AI also provides analytics and reporting tools to help developers track the performance of their chatbots and make improvements over time."
+    response_list = KB_Creator.aggregated_notes_collection
+    metadata_list = KB_Creator.aggregate_metadata_collection
+    
+    readme_format = ""
+    for response, metadata in zip(response_list, metadata_list):
+        images_format = '\n'.join(f"![Image]({img})" for img in metadata["imgs"])
+        sources_format = '\n'.join(f"- [Sources]({source})" for source in metadata["sources"])
+        links_format = 'www.google.com'
+        # links_format = '\n'.join(f"[External Link]({link})" for link in metadata["external_links"])
+        readme_format += f"{images_format}\nSources:\n{sources_format}\nExternal Links:\n{links_format}\nContent:\n{response}\n\n"
+
+    return readme_format
 
 def llm_insight_ai_data():
     chunks = KB_Creator.aggregated_notes_collection
     
     result = []
-    for i, chunk in chunks:
+    for chunk in chunks:
         d = {}
         d['description'] = chunk
         d['id'] = uuid.uuid4()
+        d['image'] = ''
         result.append(d)
+
     return result
 
     # return [{

@@ -7,8 +7,9 @@ def get_test_paper_evaluate_ai():
     quiz = asyncio.run(KB_Creator.create_quiz(KB_Creator.aggregated_notes_collection))
     
     # format : [{'question' : 'question_text' , 'options' : ['option1', 'option2', 'option3', 'option4'] , 'answer' : 'correct_option'}]
-    for q in quiz:
-        q['type'] = "single"    
+    for i, q in enumerate(quiz):
+        q['type'] = "single" 
+        q["id"] = i   
     return quiz
     # paper = [
     #     {
