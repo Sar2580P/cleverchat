@@ -2,18 +2,22 @@ from typing import List
 import pandas as pd
 import asyncio
 import uuid
-from Intelligence.tools.teacher.setup import KB_Creator
+from Intelligence.tools.teacher.setup import ReadingInfo
+from pathlib import Path
 from Intelligence.utils.misc_utils import pr
+import asyncio
+
+KB_Creator = ReadingInfo(file_path=Path('/home/sarvagya/cleverchat/Intelligence/tools/teacher/links.txt'))
 
 def llm_made_links_knowledge_base(links:List[str]):
     pr.green(links)
-    with open('../Intelligence/tools/teacher/links.txt', 'w') as f:
+    with open('/home/sarvagya/cleverchat/Intelligence/tools/teacher/links.txt', 'w') as f:
         for link in links:
             f.write(link + '\n')
     pr.red('saved links successfully')
     KB_Creator.get_clustering()
     pr.red('created clustering')
-    ordered_content = KB_Creator.ordering_content(pd.read_csv('../Intelligence/tools/teacher/clustering_results.csv'))
+    ordered_content = KB_Creator.ordering_content(pd.read_csv('/home/sarvagya/cleverchat/Intelligence/tools/teacher/clustering_results.csv'))
     pr.red('done ordering')
     final_response:List[str] = asyncio.run(KB_Creator.create_notes(ordered_content))
     return final_response            

@@ -1,6 +1,7 @@
 import asyncio
-from Intelligence.tools.teacher.setup import KB_Creator
+from agents.model.links_knowledge import KB_Creator
 from Intelligence.utils.misc_utils import pr
+
 def get_test_paper_evaluate_ai():
     
     quiz = asyncio.run(KB_Creator.create_quiz(KB_Creator.aggregated_notes_collection))
