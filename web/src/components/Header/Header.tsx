@@ -16,12 +16,14 @@ const Header = () => {
     "/Converse AI",
     "/Insight AI",
     "/Evaluate AI",
+    "/Chat AI",
   ];
   const NavBarContentLink = [
     "/",
     "/converse_ai",
     "/insight_ai",
     "/evaluate_ai",
+    "/chat_ai",
   ];
   const currentPath = usePathname();
 

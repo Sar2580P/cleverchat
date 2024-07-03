@@ -1,24 +1,23 @@
-import classes from "@/styles/insight_ai.module.css";
-import Topics from "@/components/InsightAI/Topics/Topics";
+import classes from "@/styles/chat_ai.module.css";
 import BottomNavigation from "@/components/BottomNavigation/BottomNavigation";
+import Chat from "@/components/Chat/Chat";
 
-export default function InsightAi() {
+export default function ConverseAi() {
   return (
     <div className={classes.container}>
       <div className={classes.box}>
-        <h1>Learn By Video Lectures</h1>
-        <Topics />
+        <Chat />
       </div>
       <BottomNavigation
         left={{
-          name: "Converse AI with Knowledge",
-          link: "/converse_ai",
-          display: "block",
-        }}
-        right={{
           name: "Personalized AI Assessments",
           link: "/evaluate_ai",
           display: "block",
+        }}
+        right={{
+          name: "Central AI Hub",
+          link: "/",
+          display: "none",
         }}
       />
     </div>

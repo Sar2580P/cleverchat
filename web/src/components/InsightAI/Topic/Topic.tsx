@@ -19,12 +19,13 @@ const Topic: React.FC<TopicProps> = ({ name, image, description, onEnd }) => {
   const [utterance, setUtterance] = useState<SpeechSynthesisUtterance | null>(
     null
   );
+  const [rate, setRate] = useState(1);
 
   useEffect(() => {
     const utterance = new SpeechSynthesisUtterance(description);
     utterance.lang = "en-IN";
     utterance.pitch = 2;
-    utterance.rate = 1;
+    utterance.rate = rate;
     utterance.volume = 1;
     utterance.onboundary = (event) => {
       setCurrentCharIndex(event.charIndex);
@@ -43,6 +44,11 @@ const Topic: React.FC<TopicProps> = ({ name, image, description, onEnd }) => {
       speechSynthesis.cancel();
     };
   }, [description, onEnd]);
+
+  const handleRateChange = (event: any) => {
+    const newRate = parseFloat(event.target.value);
+    setRate(newRate);
+  };
 
   const playSpeech = () => {
     if (utterance) {
@@ -89,6 +95,9 @@ const Topic: React.FC<TopicProps> = ({ name, image, description, onEnd }) => {
 
   return (
     <div className={classes["container"]}>
+      <div className={classes["teacher"]}>
+        <Image src="/teacher.png" alt="teacher" width={180} height={350} />
+      </div>
       <h2>{name}</h2>
       <div className={classes["box"]}>
         {image && <Image src={image} alt={name} width={260} height={350} />}
@@ -98,6 +107,24 @@ const Topic: React.FC<TopicProps> = ({ name, image, description, onEnd }) => {
         {renderTextWithHighlight()}
       </div>
       <div className={classes.controls}>
+        {!isPaused &&
+          typeof window !== "undefined" &&
+          window.speechSynthesis &&
+          !speechSynthesis.speaking && (
+            <>
+              <label htmlFor="rateSlider">Rate: {rate}</label>
+              <input
+                type="range"
+                id="rateSlider"
+                min="0.5"
+                max="2"
+                step="0.1"
+                value={rate}
+                onChange={handleRateChange}
+                className={classes.rateSlider}
+              />
+            </>
+          )}
         {!isPaused &&
           typeof window !== "undefined" &&
           window.speechSynthesis &&

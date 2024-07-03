@@ -33,12 +33,12 @@ export default function Home() {
       </div>
       <BottomNavigation
         left={{
-          name: "Personalized AI Assessments",
-          link: "/evaluate_ai",
+          name: "Chat AI with Knowledge",
+          link: "/chat_ai",
           display: "none",
         }}
         right={{
-          name: "Intelligent AI Chatbot",
+          name: "Converse AI with Knowledge",
           link: "/converse_ai",
           display: "block",
         }}

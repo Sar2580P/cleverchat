@@ -9,20 +9,12 @@ type Chat = {
   }[];
 }[];
 
-interface Option {
-  id: string;
-  option: string;
-}
 interface Question {
   question: string;
   type: "text" | "single" | "multi";
-  options?: Option[];
+  options?: string[];
   id: string;
-}
-interface Answer {
-  questionId: string;
-  type: "text" | "single" | "multi";
-  answer: string | string[];
+  answer: string;
 }
 
 type AppContextType = {
@@ -41,17 +33,12 @@ type AppContextType = {
 
   evaluateAiQuestions: Question[];
   onEvaluateAiQuestions: (questions: Question[]) => void;
-  evaluateAiAnswers: Answer[];
-  onEvaluateAiAnswers: (
-    questionId: string,
-    optionValue: string,
-    type: "text" | "single" | "multi"
-  ) => void;
-
-  evaluateAiResult: Record<string, string>;
-  onEvaluateAiResult: (result: Record<string, string>) => void;
-  evaluateAiResultVisible: boolean;
-  setEvaluateAiResultVisible: (visible: boolean) => void;
+  isevaluateAiAnswereCorrect: { id: string; selectedOption: boolean | null }[];
+  onEvaluateAiAnswerCorrect: (id: string, selectedOption: string) => void;
+  isQuizCompleted: boolean;
+  onQuizCompleted: (toggle: boolean) => void;
+  quizResult: Record<string, string>;
+  onQuizResult: (result: Record<string, string>) => void;
 };
 
 const AppContext = React.createContext<AppContextType>({
@@ -68,12 +55,12 @@ const AppContext = React.createContext<AppContextType>({
   setCurrentQuestion: () => {},
   evaluateAiQuestions: [],
   onEvaluateAiQuestions: () => {},
-  evaluateAiAnswers: [],
-  onEvaluateAiAnswers: () => {},
-  evaluateAiResult: {},
-  onEvaluateAiResult: () => {},
-  evaluateAiResultVisible: false,
-  setEvaluateAiResultVisible: () => {},
+  isevaluateAiAnswereCorrect: [],
+  onEvaluateAiAnswerCorrect: () => {},
+  isQuizCompleted: false,
+  onQuizCompleted: () => {},
+  quizResult: {},
+  onQuizResult: () => {},
 });
 
 type Props = {
@@ -123,46 +110,33 @@ export const AppContextProvider: React.FC<Props> = (props) => {
   const [evaluateAiQuestions, setEvaluateAiQuestions] = useState<Question[]>(
     []
   );
+  const [isevaluateAiAnswereCorrect, setIsevaluateAiAnswereCorrect] = useState<
+    { id: string; selectedOption: boolean | null }[]
+  >([]);
   const onEvaluateAiQuestions = (questions: Question[]) => {
     setEvaluateAiQuestions(questions);
-    const initialAnswers = questions.map((q) => ({
-      questionId: q.id,
-      type: q.type,
-      answer: q.type === "multi" ? [] : "",
-    }));
-    setEvaluateAiAnswers(initialAnswers);
+    setIsevaluateAiAnswereCorrect(
+      questions.map((question) => ({ id: question.id, selectedOption: null }))
+    );
   };
-  const [evaluateAiAnswers, setEvaluateAiAnswers] = useState<Answer[]>([]);
-  const onEvaluateAiAnswers = (
-    questionId: string,
-    optionValue: string,
-    type: "text" | "single" | "multi"
-  ) => {
-    setEvaluateAiAnswers((prevAnswers) =>
-      prevAnswers.map((ans) =>
-        ans.questionId === questionId
-          ? {
-              ...ans,
-              answer:
-                type === "multi"
-                  ? Array.isArray(ans.answer)
-                    ? ans.answer.includes(optionValue)
-                      ? ans.answer.filter((a) => a !== optionValue)
-                      : [...ans.answer, optionValue]
-                    : [optionValue]
-                  : optionValue,
-            }
-          : ans
+  const onEvaluateAiAnswerCorrect = (id: string, selectedOption: string) => {
+    const isCorrect =
+      evaluateAiQuestions.find((question) => question.id === id)?.answer ===
+      selectedOption;
+    setIsevaluateAiAnswereCorrect((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, selectedOption: isCorrect } : item
       )
     );
   };
-  const [evaluateAiResult, setEvaluateAiResult] = useState<
-    Record<string, string>
-  >({});
-  const onEvaluateAiResult = (result: Record<string, string>) => {
-    setEvaluateAiResult(result);
+  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+  const onQuizCompleted = (toggle: boolean) => {
+    setIsQuizCompleted(toggle);
   };
-  const [evaluateAiResultVisible, setEvaluateAiResultVisible] = useState(false);
+  const [quizResult, setQuizResult] = useState<Record<string, string>>({});
+  const onQuizResult = (result: Record<string, string>) => {
+    setQuizResult(result);
+  };
 
   useEffect(() => {
     const loadLinks = () => {
@@ -197,12 +171,12 @@ export const AppContextProvider: React.FC<Props> = (props) => {
         setCurrentQuestion,
         evaluateAiQuestions,
         onEvaluateAiQuestions,
-        evaluateAiAnswers,
-        onEvaluateAiAnswers,
-        evaluateAiResult,
-        onEvaluateAiResult,
-        evaluateAiResultVisible,
-        setEvaluateAiResultVisible,
+        isevaluateAiAnswereCorrect,
+        onEvaluateAiAnswerCorrect,
+        isQuizCompleted,
+        onQuizCompleted,
+        quizResult,
+        onQuizResult,
       }}
     >
       {props.children}

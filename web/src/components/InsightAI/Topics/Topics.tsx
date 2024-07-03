@@ -63,7 +63,7 @@ const Home: React.FC = () => {
       <Topic
         key={currentTopic.id}
         name={currentTopic.name}
-        image={currentTopic.image}
+        image={currentTopic?.image || "/background.jpg"}
         description={currentTopic.description}
         onEnd={handleEnd}
       />

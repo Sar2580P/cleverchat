@@ -15,38 +15,10 @@
   justify-content: flex-start;
   align-items: center;
   gap: 0.5rem;
-  padding: 0rem 1rem;
   width: -webkit-fill-available;
   height: calc(85vh - 4rem);
   overflow-y: scroll;
-  max-width: 80vw;
+  max-width: 90vw;
   text-align: center;
   font-size: 0.8rem;
-}
-.box > h1 {
-  margin: 0;
-  padding: 0;
-  font-size: 1.35rem;
-  font-weight: 500;
-  color: #333;
-}
-.box ul {
-  list-style: circle;
-  padding-left: 0.75rem;
-  margin: 0;
-}
-.box ul li {
-  margin: 0;
-  padding: 0.15rem 0.5rem;
-}
-.box p {
-  margin: 0;
-  padding: 0;
-}
-.box a {
-  color: var(--primary-color);
-  text-decoration: underline;
-}
-.box a:hover {
-  color: var(--secondary-color);
 }
