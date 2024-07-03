@@ -1,113 +1,25 @@
 .container {
   padding: 1rem;
-  border: 1px solid #ccc;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  max-width: 60vw;
   box-shadow: var(--box-shadow);
   transition: box-shadow var(--transition-speed);
   animation: slideIn 0.5s ease-out forwards;
-  overflow-x: hidden;
   position: relative;
-}
-.teacher {
-  position: absolute;
-  bottom: -13%;
-  left: 35%;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: slideInTeacher 0.5s ease-out 0s forwards;
-}
-.teacher > img {
-  border-radius: 50%;
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.4));
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: pulse 2s infinite;
-}
-.teacher:hover {
-  transform: translateX(-50%) scale(1.05);
-  filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.6));
-}
-.teacher:hover > img {
-  transform: rotate(-5deg);
-  filter: drop-shadow(0 0 20px rgba(241, 194, 125, 0.8));
-}
-@keyframes pulse {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 15px rgba(241, 194, 125, 0.7));
-  }
-  50% {
-    filter: drop-shadow(0 0 20px rgba(241, 194, 125, 1));
-  }
-}
-@keyframes slideInTeacher {
-  from {
-    transform: scale(0);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.container:hover {
-  box-shadow: var(--hover-box-shadow);
-}
-
-.container > h2 {
-  padding: 0;
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 500;
-  color: var(--primary-color);
-  text-align: left;
-  width: -webkit-fill-available;
-  animation: slideInFromLeft 0.5s ease-out 0s forwards;
-}
-
-@keyframes slideInFromLeft {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.box {
+  height: 60vh;
+  min-height: 400px;
+  overflow-y: scroll;
   display: flex;
   gap: 1rem;
-  width: -webkit-fill-available;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 1rem;
+  align-items: center;
+  justify-content: center;
 }
-
-.box > img {
-  flex: 1;
-  height: 40vh;
+.container > img {
+  height: 98%;
   animation: slideInImage 0.5s ease-out 0s forwards;
-  flex: 1;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
 }
-
 @keyframes slideInImage {
   from {
     transform: scale(0);
@@ -118,95 +30,130 @@
     opacity: 1;
   }
 }
-
-@keyframes slideInAndRotate {
+.video-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  position: relative;
+  overflow-x: hidden;
+}
+.video-container > h2 {
+  position: absolute;
+  top: 0.4rem;
+  left: 1rem;
+  padding: 0;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--white-color);
+  text-align: left;
+  width: -webkit-fill-available;
+  animation: slideInFromLeft 0.5s ease-out 0s forwards;
+}
+@keyframes slideInFromLeft {
   from {
-    transform: translateX(100%) perspective(300px) rotateY(-10deg) translateY(0);
+    transform: translateX(-100%);
     opacity: 0;
   }
   to {
-    transform: translateX(0) perspective(360px) rotateY(-16deg)
-      translateY(-30px);
+    transform: translateX(0);
     opacity: 1;
   }
 }
-.box > p {
-  flex: 2;
-  padding-left: 1rem;
+.video-container > video {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+}
+.lower-background {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--white-color);
+  height: 24px;
+  border-radius: 0px 0px 8px 8px;
+}
+.desc {
+  position: absolute;
+  left: 5.5%;
+  top: 25%;
+  width: 330px;
+  height: 210px;
+  overflow-y: scroll;
+}
+.desc > p {
+  padding: 0;
+  margin: 0;
   font-size: 0.85rem;
-  color: #333;
   text-align: center;
-  animation: slideInAndRotate 0.5s ease-out 0s forwards;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 4px;
-  color: var(--white-color);
-  padding: 0.75rem;
-  flex: 2;
+  animation: slidedesc 0.5s ease-out 0s forwards;
+  color: var(--black-color);
+}
+@keyframes slidedesc {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .controls {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: flex-end;
-  align-items: flex-end;
+  align-items: center;
+  gap: 0.5rem;
   width: -webkit-fill-available;
-  position: relative;
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0.25rem;
 }
-
 .controls > button {
   margin: 0 5px;
-  padding: 10px 20px;
+  padding: 7px 24px;
   font-size: 14px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
-  background-color: var(--primary-color);
+  background-color: var(--black-color);
   color: #fff;
   transition: background-color var(--transition-speed),
     transform var(--transition-speed), box-shadow var(--transition-speed);
-  margin-top: 0.5rem;
 }
-
 .controls > button:hover,
 .controls > button:focus {
   transform: translateY(-2px);
   box-shadow: var(--hover-box-shadow);
 }
-
 .controls > button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
-
 @media (max-width: 768px) {
   .container {
     max-width: 90vw;
   }
-
-  .box,
-  .controls {
-    flex-direction: column;
-    align-items: center;
-  }
-
   .controls > button {
     width: 100%;
     margin: 5px 0;
   }
 }
-
-.controls > label {
-  font-size: 0.7rem;
+.rate-slider {
+  display: flex;
+  flex-direction: column;
+}
+.controls > .rate-slider > label {
+  font-size: 0.6rem;
   text-align: left;
   width: 75px;
-  position: absolute;
-  top: -30px;
-  right: 0;
 }
 .rateSlider {
-  position: absolute;
-  top: -10px;
-  right: 0;
   -webkit-appearance: none;
   width: 75px;
   height: 6px;
@@ -226,13 +173,13 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--primary-color);
+  background: var(--black-color);
   cursor: pointer;
 }
 .rateSlider::-moz-range-thumb {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--primary-color);
+  background: var(--black-color);
   cursor: pointer;
 }

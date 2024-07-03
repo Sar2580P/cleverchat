@@ -80,8 +80,8 @@ const Topic: React.FC<TopicProps> = ({ name, image, description, onEnd }) => {
           <span
             style={{
               textDecoration: "underline",
-              textDecorationColor: "var(--primary-color)",
-              color: "var(--primary-color)",
+              textDecorationColor: "var(--white-color)",
+              color: "var(--white-color)",
             }}
           >
             {highlighted}
@@ -95,49 +95,54 @@ const Topic: React.FC<TopicProps> = ({ name, image, description, onEnd }) => {
 
   return (
     <div className={classes["container"]}>
-      <div className={classes["teacher"]}>
-        <Image src="/teacher.png" alt="teacher" width={180} height={350} />
-      </div>
-      <h2>{name}</h2>
-      <div className={classes["box"]}>
-        {image && <Image src={image} alt={name} width={260} height={350} />}
-        {!image && (
-          <Image src="/background.jpg" alt={name} width={260} height={350} />
-        )}
-        {renderTextWithHighlight()}
-      </div>
-      <div className={classes.controls}>
-        {!isPaused &&
-          typeof window !== "undefined" &&
-          window.speechSynthesis &&
-          !speechSynthesis.speaking && (
-            <>
-              <label htmlFor="rateSlider">Rate: {rate}</label>
-              <input
-                type="range"
-                id="rateSlider"
-                min="0.5"
-                max="2"
-                step="0.1"
-                value={rate}
-                onChange={handleRateChange}
-                className={classes.rateSlider}
-              />
-            </>
-          )}
-        {!isPaused &&
-          typeof window !== "undefined" &&
-          window.speechSynthesis &&
-          !speechSynthesis.speaking && (
-            <button onClick={playSpeech}>Play</button>
-          )}
-        {!isPaused &&
-          typeof window !== "undefined" &&
-          window.speechSynthesis &&
-          speechSynthesis.speaking && (
-            <button onClick={pauseSpeech}>Pause</button>
-          )}
-        {isPaused && <button onClick={resumeSpeech}>Resume</button>}
+      {image && <Image src={image} alt={name} width={260} height={350} />}
+      <div className={classes["video-container"]}>
+        <h2>{name}</h2>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          src="/video.mp4"
+          onError={(e) => {
+            e.currentTarget.src = "/background.jpg";
+          }}
+        ></video>
+        <div className={classes["lower-background"]}></div>
+        <div className={classes["desc"]}>{renderTextWithHighlight()}</div>
+        <div className={classes.controls}>
+          {!isPaused &&
+            typeof window !== "undefined" &&
+            window.speechSynthesis &&
+            !speechSynthesis.speaking && (
+              <div className={classes["rate-slider"]}>
+                <label htmlFor="rateSlider">speed: {rate}</label>
+                <input
+                  type="range"
+                  id="rateSlider"
+                  min="0.5"
+                  max="2"
+                  step="0.1"
+                  value={rate}
+                  onChange={handleRateChange}
+                  className={classes.rateSlider}
+                />
+              </div>
+            )}
+          {!isPaused &&
+            typeof window !== "undefined" &&
+            window.speechSynthesis &&
+            !speechSynthesis.speaking && (
+              <button onClick={playSpeech}>Play</button>
+            )}
+          {!isPaused &&
+            typeof window !== "undefined" &&
+            window.speechSynthesis &&
+            speechSynthesis.speaking && (
+              <button onClick={pauseSpeech}>Pause</button>
+            )}
+          {isPaused && <button onClick={resumeSpeech}>Resume</button>}
+        </div>
       </div>
     </div>
   );
