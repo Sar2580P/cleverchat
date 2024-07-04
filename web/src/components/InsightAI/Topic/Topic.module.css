@@ -16,6 +16,7 @@
 }
 .container > img {
   height: 98%;
+  width: 240px;
   animation: slideInImage 0.5s ease-out 0s forwards;
   border-radius: 8px;
   box-shadow: var(--box-shadow);

@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import classes from "@/components/InsightAI/Topic/Topic.module.css";
 
@@ -95,7 +94,7 @@ const Topic: React.FC<TopicProps> = ({ name, image, description, onEnd }) => {
 
   return (
     <div className={classes["container"]}>
-      {image && <Image src={image} alt={name} width={260} height={350} />}
+      {image && <img src={image} alt={name} />}
       <div className={classes["video-container"]}>
         <h2>{name}</h2>
         <video
