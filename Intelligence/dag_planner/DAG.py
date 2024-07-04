@@ -1,7 +1,3 @@
-# class DAG_Planning:
-#     pass
-
-
 from langchain.agents.agent import *
 from langchain.agents import AgentExecutor
 from langchain.agents.loading import AGENT_TO_CLASS
@@ -22,6 +18,7 @@ class CustomAgentExecutor(AgentExecutor):
     tool_gate : int = 0
     web_schema: List[Dict] = []
     agent: ZeroShotAgent
+    agent_name:str
     #_______________________________________________________________________________________________
     def _call(
         self,
@@ -53,9 +50,9 @@ class CustomAgentExecutor(AgentExecutor):
         # updating the prompt with the user query
         self.agent.llm_chain.prompt = self.agent.create_prompt(tools = self.tools, 
                                                                user_query=inputs['input'])
-        
 
         while self._should_continue(iterations, time_elapsed):
+            
             next_step_output = self._take_next_step(
                                                     name_to_tool_map,
                                                     color_mapping,
@@ -69,7 +66,7 @@ class CustomAgentExecutor(AgentExecutor):
 
             if isinstance(next_step_output, AgentFinish):
                 self.tool_count = 0       
-                with open ('Intelligence/dag_planner/web_schema.json' , 'w') as f:
+                with open (f'/home/sarvagya/cleverchat/Intelligence/dag_planner/planning/{self.agent_name}_planning.json' , 'w') as f:
                     json.dump(self.web_schema , f)      
                 return self._return(
                     next_step_output, intermediate_steps, run_manager=run_manager
@@ -136,7 +133,6 @@ class CustomAgentExecutor(AgentExecutor):
         """
         try:
             intermediate_steps = self._prepare_intermediate_steps(intermediate_steps)
-            # ic(intermediate_steps)
 
             # Call the LLM to see what to do.
             output = self.agent.plan(
@@ -144,8 +140,6 @@ class CustomAgentExecutor(AgentExecutor):
                 callbacks=run_manager.get_child() if run_manager else None,
                 **inputs,
             )
-            # ic(inputs , intermediate_steps , output)
-
             if isinstance(output, AgentFinish):
                 return output
 
@@ -155,6 +149,7 @@ class CustomAgentExecutor(AgentExecutor):
                 self.thought_execution_chain.append(output.log)
             
         except OutputParserException as e:
+            pr.yellow(f'Output Parser Exception : {e}')
             if isinstance(self.handle_parsing_errors, bool):
                 raise_error = not self.handle_parsing_errors
             else:
@@ -227,7 +222,7 @@ class CustomAgentExecutor(AgentExecutor):
                     'tool_input' : agent_action.tool_input ,
                     'tool_name': tool.name,
                     'tool_usage_idx' : self.tool_count,
-                    'tool_output': tool_output,    
+                    'tool_output': observation,    
                        
                 }
                 web_schema = {      
@@ -236,7 +231,7 @@ class CustomAgentExecutor(AgentExecutor):
                         'tool_input' : agent_action.tool_input ,
                         'tool_name': tool.name,
                         'tool_usage_idx' : self.tool_count,
-                        'tool_output': tool_output,
+                        'tool_output': observation,
                     }                 
                 }
 

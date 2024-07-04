@@ -13,16 +13,17 @@ from langchain.callbacks.manager import (
 # Medical ------->>>>
 
 class DiabetesDoctor(BaseTool):
-    name = "specialized_diabetes_doctor_tool"
+    name = "diabetes_doctor_tool".upper()
     description = '''
-    - The tool specializes in knowledge related to diabetes disease, symptoms, diagnosis, and treatment.
+    - The tool specializes in knowledge related to diabetes/blood sugar disease, symptoms, diagnosis, and treatment.
     '''
     retriever: Retriever = None
     response_generator: ResponseSynthesizer = None
+    emoji = "\U00002695\U0000FE0F I am a doctor! 🩺"
     def __init__(self):
         super().__init__()
-        self.retriever = Retriever(config_file_path='Intelligence/configs/retrieval.yaml', index_path='blood_sugar_medical_db')
-        self.response_generator = ResponseSynthesizer.initialize(config_file_path='Intelligence/configs/retrieval.yaml', 
+        self.retriever = Retriever(config_file_path='/home/sarvagya/cleverchat/Intelligence/configs/retrieval.yaml', index_path='blood_sugar_medical_db')
+        self.response_generator = ResponseSynthesizer.initialize(config_file_path='/home/sarvagya/cleverchat/Intelligence/configs/retrieval.yaml', 
                                                                  retriever=self.retriever)
     
     def _run(
@@ -41,23 +42,24 @@ class DiabetesDoctor(BaseTool):
 #_________________________________________________________________________________________________________________________ 
 
 class BPDoctor(BaseTool):
-    name = "specialized_blood_pressure_doctor_tool"
+    name = "blood_pressure_doctor_tool".upper()
     description = '''
     - The tool specializes in knowledge related to blood pressure, its symptoms, diagnosis, and treatment.
     '''
     
     retriever: Retriever = None
     response_generator: ResponseSynthesizer = None
+    emoji = "\U00002695\U0000FE0F I am a doctor! 🩺"
     def __init__(self):
         super().__init__()
-        self.retriever = Retriever(config_file_path='Intelligence/configs/retrieval.yaml', index_path='blood_pressure_medical_db')
-        self.response_generator = ResponseSynthesizer.initialize(config_file_path='Intelligence/configs/retrieval.yaml', 
+        self.retriever = Retriever(config_file_path='/home/sarvagya/cleverchat/Intelligence/configs/retrieval.yaml', index_path='blood_pressure_medical_db')
+        self.response_generator = ResponseSynthesizer.initialize(config_file_path='/home/sarvagya/cleverchat/Intelligence/configs/retrieval.yaml', 
                                                                  retriever=self.retriever)
     
     def _run(
         self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> Any:
-
+       
         response, metadata = self.response_generator.respond_query(query)
         return {'tool_response' : response, 
                 'response_metadata' : metadata}
@@ -70,7 +72,7 @@ class BPDoctor(BaseTool):
 
 #_________________________________________________________________________________________________________________________ 
 class FinanceAdvisor(BaseTool):
-    name = "finance_advisor_tool"
+    name = "finance_advisor_tool".upper()
     description = '''
     - This tool is helpful for queries related to financial matters.
     - The tool specializes in knowledge related to cryptocurrency, stock market, and financial literacy
@@ -78,10 +80,11 @@ class FinanceAdvisor(BaseTool):
     
     retriever: Retriever = None
     response_generator: ResponseSynthesizer = None
+    emoji =  "\U0001F4B0 I'm your financial advisor! 💰"
     def __init__(self):
         super().__init__()
-        self.retriever = Retriever(config_file_path='Intelligence/configs/retrieval.yaml', index_path='financial_advisor_db')
-        self.response_generator = ResponseSynthesizer.initialize(config_file_path='Intelligence/configs/retrieval.yaml', 
+        self.retriever = Retriever(config_file_path='/home/sarvagya/cleverchat/Intelligence/configs/retrieval.yaml', index_path='financial_advisor_db')
+        self.response_generator = ResponseSynthesizer.initialize(config_file_path='/home/sarvagya/cleverchat/Intelligence/configs/retrieval.yaml', 
                                                                  retriever=self.retriever)
     
     def _run(
@@ -100,7 +103,7 @@ class FinanceAdvisor(BaseTool):
 # _________________________________________________________________________________________________________________________
 
 class GetSimilarWorkItems(BaseTool):
-    name = "get_similar_work_items"
+    name = "get_similar_work_items_tool".upper()
     description = '''
     
     USAGE :
@@ -123,7 +126,7 @@ class GetSimilarWorkItems(BaseTool):
 # _________________________________________________________________________________________________________________________
 
 class Summarize(BaseTool):
-    name = "summarize_objects"
+    name = "summarize_objects_tool".upper()
     description = '''
     - This tool is useful for summarizing purposes.
     - It needs a list of objects as input and returns a summary of the objects. 
@@ -144,7 +147,7 @@ class Summarize(BaseTool):
 # _________________________________________________________________________________________________________________________
 
 class Prioritize(BaseTool):
-    name = "prioritize_objects"
+    name = "prioritize_objects_tool".upper()
     description = '''
     - Use this tool when asked to prioritize the objects. 
     '''
@@ -164,7 +167,7 @@ class Prioritize(BaseTool):
 # _________________________________________________________________________________________________________________________
   
 class SearchObjectByName(BaseTool):
-    name = "search_object_by_name"
+    name = "search_object_by_name_tool".upper()
     description = '''
         The tool is useful to find the id of the object by searching the object name or customer name.
     '''
@@ -185,7 +188,7 @@ class SearchObjectByName(BaseTool):
 # _________________________________________________________________________________________________________________________
 
 class CreateActionableTasksFromText(BaseTool):
-    name = "create_actionable_tasks_from_text"
+    name = "create_actionable_tasks_from_text_tool".upper()
     description = '''
 
     USAGE : 

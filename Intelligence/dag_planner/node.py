@@ -14,6 +14,7 @@ class Node(BaseModel):
     output: str = Field(default="", description="Initially empty, but contains final synthesized response using parent nodes and tool input.")
     metadata: Dict[str, Union[List[int], List[str]]] = Field(default_factory=dict, description="Meta-data of docs accessed from similarity search to answer query pertaining to this node.")
     mapping: Dict[int, "Node"] = Field(default_factory=dict, description="Dictionary mapping node indices to Node instances.")
+    tool_emoji: str = Field(default="", description="Emoji representing the tool.")
     
     class Config:
         arbitrary_types_allowed = True
@@ -64,12 +65,12 @@ class Node(BaseModel):
         final_query_prompt = self.create_prompt()
         # Call retriever to get most similar documents
         tool_output:dict = TIM[self.tool_name].run(final_query_prompt)
-        
+        self.tool_emoji = TIM[self.tool_name].emoji
         # Synthesize a final response for this node
         # synthesized_response = llm.synthesize_response(tool_output['tool_response'])
         
         # Store the output and metadata
         self.output = tool_output['tool_response']
-        self.metadata = tool_output.get('metadata', {})
+        self.metadata = tool_output.get('response_metadata', {})
             
-        return self.output
+        return self.output, self.metadata

@@ -21,8 +21,8 @@ class Web_Scrapper :
         self.response = requests.get(self.url, headers=headers)
         self.soup = BeautifulSoup(self.response.text, 'html.parser')
         self.tags = ['h1', 'h2', 'h3','h4', 'p', 'ul', 'ol', 'a', 'img', 'figcaption', 'video', 'iframe']
-        self.restricted = ['read more' , 'https://', 'http://', 'www.', 
-                        'about','careers', 'advertise' ,'newsletter', 
+        self.restricted = ['read more' , 'https://', 'http://', 'www.', 'faqs'
+                        'about','careers', 'advertise' ,'newsletter', 'privacy policy', 'terms & condition'
                         'references', 'external links', 'see also', 'about us', 'contact us', 'bibliography']
 
     def scrape_blog(self):
@@ -171,14 +171,16 @@ class Web_Scrapper :
             key_words = []
             external_ref = {}
             for j in range(lo, hi):
-                text:str = self.chunks[link_idxs[j]]['text']
+                text:str = self.chunks[link_idxs[j]]['text'].strip()
                 
-                if(any(word in text.lower().strip() for word in (self.restricted+['['])) or text==''or len(text.strip().split())>5):   # ignoring the links with citation [1], [2] etc.
+                if(any(word in text.lower() for word in (self.restricted+['['])) or len(text.split())>5 or len(text)<3):   # ignoring the links with citation [1], [2] etc.
                     continue
                 key_words.append(text)
-                external_ref[self.chunks[link_idxs[j]]['text']] = self.chunks[link_idxs[j]]['url']
+                external_ref[text] = self.chunks[link_idxs[j]]['url']
+                
+            key_words = key_words if len(key_words)<50 else key_words[:50]      # reducing no. of keywords to 50
             meta_data['imgs'] = '\n'.join(meta_data['imgs'])    
-            meta_data['key_words']  = '\t-'.join(key_words[:50])
+            meta_data['key_words']  = ', '.join(key_words)
             meta_data['external_ref'] =  '\n'.join([f"- {k} : {v}" for k,v in external_ref.items()])
             meta_data['source'] = self.url
             

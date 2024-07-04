@@ -27,6 +27,7 @@ from llama_index.core.memory.chat_memory_buffer import ChatMemoryBuffer
 from llama_index.core.memory.types import BaseMemory
 from llama_index.core.objects.base import ObjectRetriever
 from llama_index.core.tools import BaseTool, ToolOutput
+from langchain.tools import BaseTool, StructuredTool
 from llama_index.core.prompts.mixin import PromptMixinType
 from Intelligence.dag_planner.DAG import CustomAgentExecutor
 from Intelligence.dag_planner.node import Node 
@@ -38,6 +39,7 @@ import json
 from langchain.agents.output_parsers.react_single_input import ReActSingleInputOutputParser
 from Intelligence.dag_planner.agent import PersonalAgent
 from Intelligence.utils.llm_utils import Settings, llm as langchain_llm
+import os, glob
 
 class MyAgentRunner(AgentRunner):
     def __init__(
@@ -92,12 +94,15 @@ class MyAgentRunner(AgentRunner):
         self.input = _input
         
         # DAG Planning related attributes
+        self.is_single_input = True
+        self.wrapped_tools = self.wrap_as_tool(tools)
         self.dag_agent_planner = PersonalAgent.from_llm_and_tools(
-            llm = langchain_llm, tools = tools, output_parser=ReActSingleInputOutputParser()
+            llm = langchain_llm, tools = self.wrapped_tools  #, output_parser=ReActSingleInputOutputParser()
             )
         self.dag_agent_worker = CustomAgentExecutor(
                                     agent=self.dag_agent_planner ,
-                                    tools= tools,
+                                    agent_name=self.name,
+                                    tools= self.wrapped_tools,
                                     verbose=True,
                                     return_intermediate_steps=True,
                                     handle_parsing_errors=True,
@@ -107,9 +112,16 @@ class MyAgentRunner(AgentRunner):
         self.mapping = {
             tool.name : tool for tool in tools
         }
-        self.is_single_input = True
-        # pr.yellow(self.name)
-        # pr.purple(self.mapping)
+        
+        
+        # re-create planning for new query
+        if self.name == 'ROOT':
+            files = glob.glob(os.path.join('/home/sarvagya/cleverchat/Intelligence/dag_planner/planning', '*'))
+
+            for file in files:
+                if os.path.isfile(file):
+                    os.remove(file)
+
 
     @classmethod
     def from_tools(
@@ -212,6 +224,22 @@ class MyAgentRunner(AgentRunner):
         """Get prompt modules."""
         return {"agent_worker": self.agent_worker}
     
+    def wrap_as_tool(self, tools: List[Union[BaseTool, 'MyAgentRunner']]) -> List[BaseTool]:
+        wrapped_tools = []
+        def sample_func(input:str):
+            pass
+        for t in tools:
+            if isinstance(t, MyAgentRunner):
+                tool_ =  StructuredTool.from_function(
+                            func=sample_func,
+                            name=t.name,
+                            description=t.description,
+                        )
+                wrapped_tools.append(tool_)
+            else:
+                wrapped_tools.append(t)
+        return wrapped_tools
+    
     def create_graph_from_nodes_json(self, json_data: Union[str, List[Dict]]) -> Dict[str, Any]:
         if isinstance(json_data, str):
             # If a path to a JSON file is provided, load the JSON data from the file
@@ -224,7 +252,7 @@ class MyAgentRunner(AgentRunner):
         in_deg = []
         for idx, item in enumerate(json_data):
             tool_info = item['tool']
-            if 'tool' in tool_info:
+            if 'tool' in tool_info['tool_name'].lower():
                 node_instance = Node(
                     tool_name=tool_info['tool_name'],
                     tool_input=tool_info['tool_input'],
@@ -235,7 +263,7 @@ class MyAgentRunner(AgentRunner):
                 out_graph[idx] = node_instance.children_node_idxs
                 in_deg.append(len(node_instance.parent_node_idxs))
                 instance_mapping[node_instance.usage_idx] = node_instance
-            elif 'agent' in tool_info:
+            elif 'agent' in tool_info['tool_name'].lower():
                 agent_instance:MyAgentRunner = self.mapping[tool_info['tool_name']]
                 agent_instance.usage_idx = idx
                 agent_instance.input = tool_info['tool_input']
@@ -245,6 +273,7 @@ class MyAgentRunner(AgentRunner):
                 - assuming agent has no parent nodes, agent is self-sufficient to answer
                 '''
                 instance_mapping[agent_instance.usage_idx] = agent_instance
+                in_deg.append(0)
         
         return {
             'instance_mapping' : instance_mapping ,
@@ -252,10 +281,19 @@ class MyAgentRunner(AgentRunner):
             'out_graph' : out_graph , 
             'in_deg' : in_deg
         }
+        
+    def __repr__(self) -> str:
+        return (
+            f"MyAgentRunner("
+                f"tool_name={self.name}, "
+                f"tool_input={self.input}, "
+                f"usage_idx={self.usage_idx}"
+                f")"
+        )
     
     def dag_response(self, instance_display_order:List[Node] = [],  **kwargs: Any) -> List[Node]:
-        self.dag_agent_planner({'input' : self.input})
-        dag_setup = self.create_graph_from_nodes_json('Intelligence/dag_planner/web_schema.json')
+        self.dag_agent_worker({'input' : self.input})
+        dag_setup = self.create_graph_from_nodes_json(f'/home/sarvagya/cleverchat/Intelligence/dag_planner/planning/{self.name}_planning.json')
         logger.debug('\n---------Filling nodes topo-bfs manner--------\n')
         # applying topo-bfs starting with nodes having 0 indegree
         deq = deque()
@@ -264,7 +302,7 @@ class MyAgentRunner(AgentRunner):
         for i, in_deg in enumerate(dag_setup['in_deg']):
             if in_deg == 0:
                 deq.append(i)
-                
+
         # self.instance_display_order = []
         while len(deq)>0:
             node_idx = deq.popleft()
@@ -273,7 +311,7 @@ class MyAgentRunner(AgentRunner):
             if isinstance(node_instance, Node):
                 node_instance.run_node()
                 instance_display_order.append(node_instance)
-                # logger.info(f"tool_name : {node_instance.tool_name} , input : {node_instance.tool_input} , output : {node_instance.output}\n\n")
+
                 for child_idx in node_instance.children_node_idxs:
                     dag_setup['in_deg'][child_idx] -= 1
                     if dag_setup['in_deg'][child_idx] ==0 : 

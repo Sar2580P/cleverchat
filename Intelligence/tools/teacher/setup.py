@@ -19,17 +19,19 @@ from Intelligence.utils.llm_utils import Settings
 from Intelligence.utils.misc_utils import logger, pr
 import asyncio
 import ast
+from collections import defaultdict
 
 class ReadingInfo(BaseModel):
     file_path: Path
-    base_dir: Path = Path('../Intelligence/tools/teacher')
+    base_dir: Path = Path('/home/sarvagya/cleverchat/Intelligence/tools/teacher')
     name : str = 'teacher_knowledge_base'
     combine_info_template:str = COMBINE_INFO_TEMPLATE
     content: Optional[str] = None
     scrapper :ClassVar[Web_Scrapper] = Web_Scrapper()
-    chunk_size:int=500
+    chunk_size:int=250
     chunk_overlap:int=40
     aggregated_notes_collection: List[str] = None
+    aggregate_metadata_collection:Dict[str, List] = None
     quiz_collection: List[Dict] = None
     quiz_template: str = QUIZ_TEMPLATE
     
@@ -97,11 +99,13 @@ class ReadingInfo(BaseModel):
         ids = range(len(embedded_nodes))
         ranks = [node.metadata['rank'] for node in embedded_nodes]
         content = [node.text for node in embedded_nodes]
+        meta_data = [node.metadata for node in embedded_nodes]
         df = pd.DataFrame({
             'id': ids,
             'label': labels,
             'rank': ranks, 
-            'content': content
+            'content': content, 
+            'metadata': meta_data,
         })
         
         # Step 4: Save DataFrame to CSV file
@@ -109,21 +113,21 @@ class ReadingInfo(BaseModel):
         df.to_csv(save_path, index=False)
         print(f"CSV file saved: {save_path}")
 
-        tsne_embedded = TSNE(n_components=3, random_state=42).fit_transform(reduced_embeddings)
+        # tsne_embedded = TSNE(n_components=3, random_state=42).fit_transform(reduced_embeddings)
         
-        fig = plt.figure(figsize=(12, 10))
-        ax = fig.add_subplot(111, projection='3d')
-        scatter = ax.scatter(tsne_embedded[:, 0], tsne_embedded[:, 1], tsne_embedded[:, 2], c=labels, cmap='viridis', alpha=0.5)
+        # fig = plt.figure(figsize=(12, 10))
+        # ax = fig.add_subplot(111, projection='3d')
+        # scatter = ax.scatter(tsne_embedded[:, 0], tsne_embedded[:, 1], tsne_embedded[:, 2], c=labels, cmap='viridis', alpha=0.5)
         
-        ax.set_title('3D TSNE Plot of Clustering')
-        ax.set_xlabel('TSNE Component 1')
-        ax.set_ylabel('TSNE Component 2')
-        ax.set_zlabel('TSNE Component 3')
+        # ax.set_title('3D TSNE Plot of Clustering')
+        # ax.set_xlabel('TSNE Component 1')
+        # ax.set_ylabel('TSNE Component 2')
+        # ax.set_zlabel('TSNE Component 3')
         
-        legend1 = ax.legend(*scatter.legend_elements(), title="Clusters")
-        ax.add_artist(legend1)
+        # legend1 = ax.legend(*scatter.legend_elements(), title="Clusters")
+        # ax.add_artist(legend1)
         
-        plt.savefig(self.base_dir/'clustering_tsne_plot_3d.png')
+        # plt.savefig(self.base_dir/'clustering_tsne_plot_3d.png')
 
     
     def ordering_content(self, df:pd.DataFrame)->List:
@@ -137,15 +141,47 @@ class ReadingInfo(BaseModel):
     
         # Step 2: Create a list to store ordered contents
         ordered_contents = []
-        
-        # Step 3: Iterate through all the labels in global order
+        ordered_metadata = []
+            # Step 3: Iterate through all the labels in global order
         for label in tqdm(label_ordering, desc = 'Ordering information chunks'):
             label_content = df[df['label'] == label]['content'].tolist()
             combined_content = f"\n{'-'*75}\n".join(label_content)
+            combined_metadata = self.aggregate_metadata(df[df['label'] == label]['metadata'].tolist())
             ordered_contents.append(combined_content)
-        
-        return ordered_contents
+            ordered_metadata.append(combined_metadata)
+
+        self.aggregate_metadata_collection = ordered_metadata
+
+        return ordered_contents, ordered_metadata
     
+    def aggregate_metadata(self, metadata:List[Dict])->Dict:
+        '''
+        currently using following as metadata:
+           - source (node_id) to store link/ reference to information
+           - unique important keywords across all nodes
+           - image_links across all nodes
+        '''
+
+        agg_metadata = defaultdict(set)
+        
+        for meta in metadata:
+            meta = ast.literal_eval(meta)
+            keywords = meta['key_words'].split(', ')
+            for w in keywords:
+                agg_metadata['key_words'].add(w)
+            
+            agg_metadata['sources'].add(meta['source'])
+            external_ref = meta['external_ref']
+            
+            for img_path in meta['imgs'].split('\n'):
+                agg_metadata['imgs'].add(img_path)
+                
+        agg_metadata['key_words'] = list(agg_metadata['key_words'])
+        agg_metadata['sources'] = list(agg_metadata['sources'])
+        agg_metadata['imgs'] = list(agg_metadata['imgs'])
+        
+        # logger.debug(f'Aggregated metadata : {agg_metadata}')
+        return agg_metadata
     
     async def create_notes(self, contents: List[str]) -> List[str]:
         import asyncio
@@ -153,11 +189,11 @@ class ReadingInfo(BaseModel):
         async def fetch_note(content: str, template:str) -> str:
             full_prompt = PromptTemplate(template).format(info= content)
 
-            note = Settings.llm.complete(full_prompt)
+            note = Settings.llm.complete(full_prompt).text.strip()
             return note
         try:
             # Create a list of tasks for asynchronous fetching of notes
-            tasks = [fetch_note(content, self.combine_info_template) for content in tqdm(contents[:1], desc = 'making notes using LLM')]
+            tasks = [fetch_note(content, self.combine_info_template) for content in tqdm(contents[:2], desc = 'making notes using LLM')]
             
             # Await the completion of all tasks
             self.aggregated_notes_collection = await asyncio.gather(*tasks)
@@ -192,8 +228,8 @@ class ReadingInfo(BaseModel):
     
     
 
-import asyncio
-KB_Creator = ReadingInfo(file_path=Path('../Intelligence/tools/teacher/links.txt'))
+# import asyncio
+# KB_Creator = ReadingInfo(file_path=Path('Intelligence/tools/teacher/links.txt'))
 # x = a.ordering_content(pd.read_csv('Intelligence/tools/teacher/clustering_results.csv'))
 # y = asyncio.run(a.create_notes(x[:1]))
 # z = asyncio.run(a.create_quiz(y))

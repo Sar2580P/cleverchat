@@ -171,4 +171,5 @@ response = '''[
 ]'''
 
 import ast
-print(ast.literal_eval(response))
+response = '''\nBelow are the tools in your tool-kit along with their description to help you decide on tool choice.\n\n\n\nMEDICAL_AGENT: Useful for queries related to medical diagnosis, diseases, remedies and fitness and exercise. It has a staff of expertise in diabetes and blood pressure domains.\nFINANCIAL_AGENT: Useful for queries related to stock market, cryptocurrency, and financial literacy.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [MEDICAL_AGENT, FINANCIAL_AGENT]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\n\n\n\nBegin!\n\nQuestion: {input}\nThought:{agent_scratchpad}'''
+print(response)

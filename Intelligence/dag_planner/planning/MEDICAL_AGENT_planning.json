@@ -1,0 +1,1 @@
+[{"tool": {"thought": "Thought: Identifying the tool to use since the question is related to diabetes", "tool_input": "What are the home remedies for diabetes?", "tool_name": "DIABETES_DOCTOR_TOOL", "tool_usage_idx": 0, "tool_output": "$$PREV[0]"}}]

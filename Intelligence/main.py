@@ -1,8 +1,4 @@
-from Intelligence.node_processing.ingestion import Pipeline 
-from llama_index.core import get_response_synthesizer 
-from llama_index.core.retrievers import VectorIndexRetriever
-from llama_index.core.query_engine import RetrieverQueryEngine
-from Intelligence.utils.misc_utils import pr
+
 
 # index = Vec_Store.get_vectorstore(path='vector_store/medical_db')
 # retriever = VectorIndexRetriever(
@@ -36,3 +32,8 @@ from Intelligence.utils.misc_utils import pr
 # print(response)
 # print('response_time : ' , Settings.llm.response_time)
 # print('request_ct : ' , Settings.llm.request_ct)
+
+# Using the emoji directly
+doctor_emoji = "🧑‍⚕️"
+print(doctor_emoji)
+# Using Unicode code points

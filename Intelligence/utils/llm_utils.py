@@ -98,7 +98,7 @@ class Delayed_Embedding(GeminiEmbedding):
     sleep_time: Optional[str] = Field(description="To reduce the requests per minute rate to API calls")
     request_ct: Optional[str] = Field(description="To count total API calls made in entire query processing")
     response_time: Optional[str] = Field(description="To get total time taken to get all the responses from API calls")
-        
+    embed_batch_size: int = Field(description="To keep track of batch size for embedding", default=20)
     def __init__(self, model_name: str = "models/embedding-001", api_key: Optional[str] = None, sleep_time = 0.7):
         super().__init__(model_name=model_name, api_key=api_key)
         self.request_ct = 0

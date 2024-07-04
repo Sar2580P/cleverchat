@@ -1,0 +1,1 @@
+[{"tool": {"thought": "Thought: The question seems to be related to stock market.", "tool_input": "How can I start investing in Stock Market?", "tool_name": "FINANCE_ADVISOR_TOOL", "tool_usage_idx": 0, "tool_output": "$$PREV[0]"}}]

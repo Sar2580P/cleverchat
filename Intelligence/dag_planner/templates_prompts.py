@@ -1,45 +1,47 @@
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
-# from dag_planner.parsers import *
 
-
-PAST_MISTAKES ='''
-
-Below I have mentioned common mistakes made by you while using the tools.
-
-{mistakes}
-
-!! PLEASE GO THROUGH THEM CAREFULLY AND AVOID MAKING SIMILAR MISTAKES.
-Note that the context of above mistakes are different AND INDEPENDENT FROM CURRENT USER QUERY.
-DO  NOT TAKE CONTEXT FROM ABOVE QUERIES.
-
-'''
 PREFIX = """
 Below are the tools in your tool-kit along with their description to help you decide on tool choice.
 
 """
 SUFFIX = """Begin!
 
-Question: {input}
-Thought:{agent_scratchpad}"""
-#____________________________________________________________________________________________________________
+Question : {input}
 
-FORMAT_INSTRUCTIONS = """Use the following format:
+Steps Taken: {agent_scratchpad}"""
+#____________________________________________________________________________________________________________
+FORMAT_INSTRUCTIONS_DAG = '''
+Use the following format--->
 
 Question: the input question you must answer
 Thought: you should always think about what to do
 Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
-Thought: I now know the final answer
-Final Answer: the final answer to the original input question
+Action Input: the input to the action, pass in the query in natural language
+Observation: $$PREV[i], representing the output of the ith action
+    ... (this Thought/ Action/ Action Input/ Observation can repeat N times)
+
+Thought: Thinking whether the sequence of action input represent the question correctly
+Final Answer: Decision to conclude the iterations
+------------------------------------------------------------
+'''
+
+#____________________________________________________________________________________________________________
+
+FORMAT_INSTRUCTIONS = """Use the following format:
+
+Follow the order : THOUGHT --> ACTION --> ACTION INPUT --> OBSERVATION
+
+QUESTION : the input question you must answer
+THOUGHT : first create a logic to solve the problem based on tools available
+ACTION : the action to take, should be one of [{tool_names}]
+ACTION INPUT : the input to the action
+OBSERVATION : the result of the action
+    ...... (this THOUGHT/ ACTION/ ACTION INPUT/ OBSERVATION can repeat N times)
 
 
+THOUGHT : I now know the final answer
+FINAL ANSWER : the final answer to the original input question
 """
-
-# ===================================================================================================================================================================================================
-# ===================================================================================================================================================================================================
-# ===================================================================================================================================================================================================
 
 # MISTAKE_SELECTION =  '''
 

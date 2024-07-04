@@ -12,4 +12,3 @@ fi
 echo -e "\n\nActivating the working environment..."
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 poetry shell
-

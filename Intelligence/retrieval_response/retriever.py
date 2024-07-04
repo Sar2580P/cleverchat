@@ -27,7 +27,7 @@ class Retriever(VectorIndexRetriever):
         **kwargs: Any,
     ) -> None:
         """Initialize params."""
-        self._index =  Vec_Store.get_vectorstore(os.path.join('Intelligence/vector_stores', index_path))
+        self._index =  Vec_Store.get_vectorstore(os.path.join('/home/sarvagya/cleverchat/Intelligence/vector_stores', index_path))
         
         with open(config_file_path, 'r') as f:
             config = yaml.safe_load(f) if config_file_path.endswith(".yaml") else json.load(f)
@@ -49,10 +49,10 @@ class Retriever(VectorIndexRetriever):
     def retrieve(self, query:str):
         self.get_retriever()
         nodes = self.vec_retriever.retrieve(query)
-        bm25_results = BM25Retriever.from_defaults(nodes=[node.node for node in nodes], 
-                                                   verbose=True, similarity_top_k=20).retrieve( query)
-        sorted_results = sorted(bm25_results, key=lambda x: x.score, reverse=True)
-        return sorted_results
+        # bm25_results = BM25Retriever.from_defaults(nodes=[node.node for node in nodes], 
+        #                                            verbose=True, similarity_top_k=20).retrieve( query)
+        # sorted_results = sorted(bm25_results, key=lambda x: x.score, reverse=True)
+        return nodes
     
 
 class ResponseSynthesizer(BaseModel):
@@ -68,7 +68,7 @@ class ResponseSynthesizer(BaseModel):
     @classmethod
     def initialize(cls, config_file_path: str, retriever:Retriever) -> "ResponseSynthesizer":
 
-        with open( config_file_path, 'r') as f:
+        with open(config_file_path, 'r') as f:
             config = yaml.safe_load(f) if config_file_path.endswith(".yaml") else json.load(f)
 
         response_synthesis_settings = config.get("response_synthesis", {})
@@ -101,7 +101,7 @@ class ResponseSynthesizer(BaseModel):
     
     def get_node_post_processors(self):
         self.node_post_processors = [
-                        # SimilarityPostprocessor(similarity_cutoff=0.66) ,
+                        SimilarityPostprocessor(similarity_cutoff=0.6) ,
                         # TimeWeightedPostprocessor(
                         #     time_decay=0.5, time_access_refresh=False, top_k=1
                         # )
@@ -120,8 +120,11 @@ class ResponseSynthesizer(BaseModel):
         
     def respond_query(self, query:str)-> Tuple[str, Dict[str, Union[List, str]]]:
         self.get_query_engine()
-
-        response = self.query_engine.query(query)
+        print('HI')
+        try:
+            response = self.query_engine.query(query)
+        except Exception as e:
+            pr.green(e)
         logger.debug(f'Extracted {len(response.source_nodes)} similar nodes')
         aggregated_metadata = self.aggregate_metadata(response.source_nodes)
         return response.response ,  aggregated_metadata 
@@ -138,7 +141,7 @@ class ResponseSynthesizer(BaseModel):
         
         for node in nodes:
             meta:Dict[str, Union[List, str]] = node.metadata
-            keywords = meta['key_words'].split('\t-')
+            keywords = meta['key_words'].split(', ')
             for w in keywords:
                 agg_metadata['key_words'].add(w)
             
@@ -165,3 +168,4 @@ class ResponseSynthesizer(BaseModel):
 #                                    retriever=Ret)
 # x = s.respond_query('Symptoms of high blood pressure.')
 # logger.info(x)
+

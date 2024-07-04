@@ -12,10 +12,11 @@ import json
 
 class Pipeline:
     
-    def __init__(self, chunk_size=300, chunk_overlap=40):
+    def __init__(self, chunk_size=175, chunk_overlap=45):
         self.ingestion = IngestionPipeline(
             transformations=[
-                SentenceSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap),
+                
+                SentenceSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap),  # https://docs.llamaindex.ai/en/stable/api_reference/node_parsers/token_text_splitter/
                 # TitleExtractor(),
                 # DescriptiveKeywords(seperator='__', 
                 #                     index = Vec_Store.get_vectorstore(path = 'vector_stores/descriptive_prefixes')),
@@ -73,3 +74,4 @@ class Pipeline:
                 json.dump(unsuccessful_trials, f)
         else:
             pr.green('<--- All links scraped and ingested successfully --->')
+            

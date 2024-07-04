@@ -38,8 +38,13 @@ NEXT_PUBLIC_BACKEND_URL= http://127.0.0.1:8000
 
 
 Todo : 
-- resolve clash between metadata and chunk size
-- increase batch size of embedding
-- llm not able to make calls for large  list of docs
-- Create heirarchy of agents and tools
+- resolve clash between metadata and chunk size    ---> done
+- increase batch size of embedding ----> done
+- llm not able to make calls for large  list of docs  --> resolved via paid api
+- Create heirarchy of agents and tools ---> done
 - calling generate_embeddings async manner
+- agent answering the question itself   ----> resolved
+- when same agent called multiple times in graph, its previous queries over-written
+
+
+- content replaced with query
