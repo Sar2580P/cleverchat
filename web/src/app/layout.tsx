@@ -9,7 +9,7 @@ import Notifications from "@/components/Notification/Notifications";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CleverChat",
+  title: "Genius Learning HubAi",
   description:
     "AI-driven app with smart navigation, interactive chatbot, insightful videos, and personalized assessments.",
   icons: ["robot.jpg"],

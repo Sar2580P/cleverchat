@@ -3,26 +3,25 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-end;
-  width: -webkit-fill-available;
+  width: 90%;
   color: var(--primary-color);
-  margin: 0 1rem;
   box-shadow: var(--box-shadow-small-outset);
 }
 .message-box {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   gap: 1rem;
   color: var(--primary-color);
   position: relative;
   width: -webkit-fill-available;
-  padding: 0.7rem;
+  padding: 0.5rem;
 
   border-radius: 20px;
 }
 .user-logo {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   color: var(--light-white-color);
   background-color: var(--tertiary-color);
   padding: 0.5rem;
@@ -31,13 +30,18 @@
   text-transform: uppercase;
 }
 .message {
-  font-size: 1rem;
+  font-size: 0.75rem;
   color: var(--message-color);
-  width: 90%;
+  width: -webkit-fill-available;
   word-wrap: break-word;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 1rem;
 }
 .user > .message {
   color: var(--message-user-color);
@@ -46,23 +50,117 @@
   color: var(--white-color);
   background-color: var(--message-user-color);
 }
+.each-markdown {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: -webkit-fill-available;
+  position: relative;
+  overflow-y: scroll;
+}
+.message h1,
+.message h2,
+.message h3,
+.message h4,
+.message h5,
+.message h6 {
+  margin: 0;
+  padding: 0;
+  color: #333;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+.message h1 {
+  font-size: 1.5rem;
+}
+.message h2 {
+  font-size: 1.25rem;
+}
+.message h3 {
+  font-size: 1.1rem;
+}
+.message h4 {
+  font-size: 1rem;
+}
+.message h5 {
+  font-size: 0.9rem;
+}
+.message h6 {
+  font-size: 0.8rem;
+}
 .message ul {
   list-style: circle;
-  padding-left: 1rem;
+  padding-left: 0.75rem;
   margin: 0;
+  display: block;
+  width: 100%;
 }
 .message ul li {
   margin: 0;
-  padding: 0.25rem 0.5rem;
+  padding: 0.15rem 0.5rem;
+  display: block;
+  width: 60%;
+  text-align: left;
 }
 .message p {
   margin: 0;
   padding: 0;
+  display: block;
+  width: 60%;
+  text-align: left;
 }
 .message a {
   color: var(--primary-color);
   text-decoration: underline;
+  width: 60%;
+  text-align: left;
 }
 .message a:hover {
   color: var(--secondary-color);
+}
+.message img {
+  width: auto;
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  position: absolute;
+  top: 10px;
+  right: 1rem;
+}
+.message img:nth-child(1) {
+  top: 10px;
+}
+.message img:nth-child(2) {
+  top: 140px;
+}
+.message img:nth-child(3) {
+  top: 270px;
+}
+.message img:nth-child(4) {
+  top: 400px;
+}
+.message img:nth-child(5) {
+  top: 530px;
+}
+.message img:nth-child(6) {
+  top: 660px;
+}
+.message img:nth-child(7) {
+  top: 790px;
+}
+.message img:nth-child(8) {
+  top: 920px;
+}
+.message img:nth-child(9) {
+  top: 1050px;
+}
+.message img:nth-child(10) {
+  top: 1180px;
+}
+.message img:nth-child(11) {
+  top: 1310px;
 }
