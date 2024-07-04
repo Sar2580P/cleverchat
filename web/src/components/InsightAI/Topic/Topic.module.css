@@ -1,96 +1,186 @@
 .container {
   padding: 1rem;
-  border: 1px solid #ccc;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  max-width: 60vw;
   box-shadow: var(--box-shadow);
   transition: box-shadow var(--transition-speed);
-}
-
-.container:hover {
-  box-shadow: var(--hover-box-shadow);
-}
-
-.container > h2 {
-  padding: 0;
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--primary-color);
-  text-align: left;
-  width: -webkit-fill-available;
-}
-
-.box {
+  animation: slideIn 0.5s ease-out forwards;
+  position: relative;
+  height: 60vh;
+  min-height: 400px;
+  overflow-y: scroll;
   display: flex;
   gap: 1rem;
-  width: -webkit-fill-available;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 1rem;
+  align-items: center;
+  justify-content: center;
 }
-
-.box > img {
-  flex: 1;
+.container > img {
+  height: 98%;
+  width: 240px;
+  animation: slideInImage 0.5s ease-out 0s forwards;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
 }
-
-.box > p {
-  flex: 2;
-  padding-left: 1rem;
-  font-size: 0.9rem;
-  color: #333;
+@keyframes slideInImage {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.video-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  position: relative;
+  overflow-x: hidden;
+}
+.video-container > h2 {
+  position: absolute;
+  top: 0.4rem;
+  left: 1rem;
+  padding: 0;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--white-color);
   text-align: left;
+  width: -webkit-fill-available;
+  animation: slideInFromLeft 0.5s ease-out 0s forwards;
+}
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.video-container > video {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+}
+.lower-background {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--white-color);
+  height: 24px;
+  border-radius: 0px 0px 8px 8px;
+}
+.desc {
+  position: absolute;
+  left: 5.5%;
+  top: 25%;
+  width: 330px;
+  height: 210px;
+  overflow-y: scroll;
+}
+.desc > p {
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: center;
+  animation: slidedesc 0.5s ease-out 0s forwards;
+  color: var(--black-color);
+}
+@keyframes slidedesc {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .controls {
   display: flex;
+  flex-direction: row;
   justify-content: flex-end;
-  align-items: flex-end;
+  align-items: center;
+  gap: 0.5rem;
   width: -webkit-fill-available;
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0.25rem;
 }
-
 .controls > button {
   margin: 0 5px;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 7px 24px;
+  font-size: 14px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
-  background-color: var(--primary-color);
+  background-color: var(--black-color);
   color: #fff;
   transition: background-color var(--transition-speed),
     transform var(--transition-speed), box-shadow var(--transition-speed);
 }
-
 .controls > button:hover,
 .controls > button:focus {
   transform: translateY(-2px);
   box-shadow: var(--hover-box-shadow);
 }
-
 .controls > button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
-
 @media (max-width: 768px) {
   .container {
     max-width: 90vw;
   }
-
-  .box,
-  .controls {
-    flex-direction: column;
-    align-items: center;
-  }
-
   .controls > button {
     width: 100%;
     margin: 5px 0;
   }
+}
+.rate-slider {
+  display: flex;
+  flex-direction: column;
+}
+.controls > .rate-slider > label {
+  font-size: 0.6rem;
+  text-align: left;
+  width: 75px;
+}
+.rateSlider {
+  -webkit-appearance: none;
+  width: 75px;
+  height: 6px;
+  border-radius: 2px;
+  background: #ddd;
+  outline: none;
+  opacity: 0.8;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+.rateSlider:hover {
+  opacity: 1;
+}
+.rateSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--black-color);
+  cursor: pointer;
+}
+.rateSlider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--black-color);
+  cursor: pointer;
 }

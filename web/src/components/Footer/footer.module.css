@@ -32,7 +32,7 @@
   padding: 0;
   margin: 0;
   color: var(--white-color);
-  font-size: var(--ft-400);
+  font-size: var(--ft-300);
   font-weight: 500;
 }
 .bottom_items_box > h2::after {
@@ -58,7 +58,7 @@
 .bottom_item {
   cursor: pointer;
   color: var(--para-color);
-  font-size: var(--ft-400);
+  font-size: var(--ft-300);
   font-weight: 400;
 }
 .bottom_item:hover {
@@ -85,7 +85,7 @@
 .bottom_footer_left > p {
   padding: 0;
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: bold;
   cursor: pointer;
   color: var(--white-color);
@@ -115,6 +115,6 @@
     gap: 1rem;
   }
   .bottom_footer_left > p {
-    font-size: 1rem;
+    font-size: 0.7rem;
   }
 }

@@ -16,9 +16,9 @@ export default function EvaluateAi() {
           display: "block",
         }}
         right={{
-          name: "Central AI Hub",
-          link: "/",
-          display: "none",
+          name: "Chat AI with Knowledge",
+          link: "/chat_ai",
+          display: "block",
         }}
       />
     </div>

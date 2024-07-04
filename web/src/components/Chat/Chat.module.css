@@ -2,7 +2,6 @@
   display: flex;
   height: 100%;
   width: -webkit-fill-available;
-  padding-bottom: 1rem;
 }
 .box {
   display: flex;
@@ -21,7 +20,7 @@
   position: relative;
 }
 .chat-bottom svg {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   cursor: pointer;
   transition: all 0.3s ease;
   color: var(--primary-color);
@@ -50,7 +49,7 @@
 }
 @media (max-width: 768px) {
   .box {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     flex-direction: column;
   }
   .left {
@@ -63,6 +62,6 @@
 
 @media (max-width: 576px) {
   .box {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
 }

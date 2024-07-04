@@ -8,7 +8,7 @@ type Chat = {
   data: {
     role: string;
     parts: {
-      text: string;
+      text: string[];
     }[];
   }[];
   loading: boolean;

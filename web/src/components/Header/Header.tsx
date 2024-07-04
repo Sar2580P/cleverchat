@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import classes from "@/components/Header/Header.module.css";
+import classes from "@/components/Header/header.module.css";
 import ContactLogo from "@/components/ContactLogo/ContactLogo";
 import { usePathname } from "next/navigation";
 
@@ -16,12 +16,14 @@ const Header = () => {
     "/Converse AI",
     "/Insight AI",
     "/Evaluate AI",
+    "/Chat AI",
   ];
   const NavBarContentLink = [
     "/",
     "/converse_ai",
     "/insight_ai",
     "/evaluate_ai",
+    "/chat_ai",
   ];
   const currentPath = usePathname();
 
