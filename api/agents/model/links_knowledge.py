@@ -26,25 +26,27 @@ def llm_converse_ai_readme():
     response_list = KB_Creator.aggregated_notes_collection
     metadata_list = KB_Creator.aggregate_metadata_collection
     
-    readme_format = ""
+    readme_list = []
+    
     for response, metadata in zip(response_list, metadata_list):
+        readme_format = ""
         images_format = '\n'.join(f"![Image]({img})" for img in metadata["imgs"])
         sources_format = '\n'.join(f"- [Sources]({source})" for source in metadata["sources"])
-        links_format = 'www.google.com'
+        links_format = f"\n- ['External Link']({'www.google.com'})" # dummy link
         # links_format = '\n'.join(f"[External Link]({link})" for link in metadata["external_links"])
-        readme_format += f"{images_format}\nSources:\n{sources_format}\nExternal Links:\n{links_format}\nContent:\n{response}\n\n"
-
-    return readme_format
+        readme_format += f"\n{images_format}\n## Sources:\n{sources_format}\n## External Links:\n{links_format}\n\n{response}\n\n ---\n\n"
+        readme_list.append(readme_format)
+    return readme_list
 
 def llm_insight_ai_data():
     chunks = KB_Creator.aggregated_notes_collection
-    
+    metadata_list = KB_Creator.aggregate_metadata_collection
     result = []
-    for chunk in chunks:
+    for chunk, metadata in zip(chunks, metadata_list):
         d = {}
-        d['description'] = chunk
+        d['description'] = chunk.replace('#', '').replace('*', '')
         d['id'] = uuid.uuid4()
-        d['image'] = ''
+        d['image'] = metadata['imgs'][0] if metadata['imgs'] else ''
         result.append(d)
 
     return result
