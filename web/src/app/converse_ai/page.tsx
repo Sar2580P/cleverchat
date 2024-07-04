@@ -7,6 +7,19 @@ import AppContext from "@/contexts/AppContext";
 import useGetLLMResponse from "@/hooks/useGetLLMResponse";
 import LoadingComponent from "@/components/Loading/Loading";
 
+const shadesOfWhite = [
+  "#FFFAFA",
+  "#FFFFF0",
+  "#FAF0E6",
+  "#FFF5EE",
+  "#FDF5E6",
+  "#FFFAF0",
+  "#F8F8FF",
+  "#FAEBD7",
+  "#F5F5F5",
+  "#F0FFFF",
+];
+
 export default function ConverseAi() {
   const appCtx = useContext(AppContext);
   const { getLLMResponse, loading } = useGetLLMResponse();
@@ -26,11 +39,17 @@ export default function ConverseAi() {
         {loading ? (
           <LoadingComponent height="90vh" />
         ) : (
-          <Markdown>
-            {appCtx.converseAiMarkdown
-              ? appCtx.converseAiMarkdown
-              : "No Knowledge Found"}
-          </Markdown>
+          appCtx.converseAiMarkdown?.map((markdownString, index) => (
+            <div
+              className={classes["each-markdown"]}
+              style={{
+                backgroundColor: shadesOfWhite[index % shadesOfWhite.length],
+              }}
+              key={index}
+            >
+              <Markdown key={index}>{markdownString}</Markdown>
+            </div>
+          ))
         )}
       </div>
       <BottomNavigation

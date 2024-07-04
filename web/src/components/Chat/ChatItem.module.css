@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-end;
-  width: -webkit-fill-available;
+  width: 70%;
   color: var(--primary-color);
   box-shadow: var(--box-shadow-small-outset);
 }
@@ -32,7 +32,7 @@
 .message {
   font-size: 0.75rem;
   color: var(--message-color);
-  width: 90%;
+  width: -webkit-fill-available;
   word-wrap: break-word;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial,
@@ -48,6 +48,12 @@
 .user > .user-logo {
   color: var(--white-color);
   background-color: var(--message-user-color);
+}
+.each-markdown {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 .message h1,
 .message h2,

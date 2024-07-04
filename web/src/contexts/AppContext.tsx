@@ -5,7 +5,7 @@ import { useNotification } from "@/hooks/useNotification";
 type Chat = {
   role: string;
   parts: {
-    text: string;
+    text: string[];
   }[];
 }[];
 
@@ -24,8 +24,8 @@ type AppContextType = {
   onLink: (link: string) => void;
   onDelete: (link: string) => void;
 
-  converseAiMarkdown: string;
-  onConverseAiMarkdown: (markdown: string) => void;
+  converseAiMarkdown: string[];
+  onConverseAiMarkdown: (markdown: string[]) => void;
   converseAiChats: Chat;
   onConverseAiChats: (chat: Chat) => void;
   currentQuestion: string;
@@ -47,7 +47,7 @@ const AppContext = React.createContext<AppContextType>({
   onLinks: () => {},
   onLink: () => {},
   onDelete: () => {},
-  converseAiMarkdown: "",
+  converseAiMarkdown: [],
   onConverseAiMarkdown: () => {},
   converseAiChats: [],
   onConverseAiChats: () => {},
@@ -95,10 +95,10 @@ export const AppContextProvider: React.FC<Props> = (props) => {
   };
 
   // CODE INTELLIGENT AI CHATBOT PAGE
-  const [converseAiMarkdown, setConverseAiMarkdown] = useState("");
-  const onConverseAiMarkdown = (markdown: string) => {
+  const [converseAiMarkdown, setConverseAiMarkdown] = useState<string[]>([]);
+  const onConverseAiMarkdown = (markdown: string[]) => {
     setConverseAiMarkdown(markdown);
-    localStorage.setItem("clever_chat_markdown", markdown);
+    localStorage.setItem("clever_chat_markdown", JSON.stringify(markdown));
   };
   const [converseAiChats, setConverseAiChats] = useState<Chat>([]);
   const onConverseAiChats = (chat: Chat) => {
@@ -148,7 +148,7 @@ export const AppContextProvider: React.FC<Props> = (props) => {
 
         const savedMarkdown = localStorage.getItem("clever_chat_markdown");
         if (savedMarkdown) {
-          setConverseAiMarkdown(savedMarkdown);
+          setConverseAiMarkdown(JSON.parse(savedMarkdown));
         }
       }
     };

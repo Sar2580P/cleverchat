@@ -27,7 +27,7 @@ const Chat = ({}) => {
     onConverseAiChats([
       {
         role: "user",
-        parts: [{ text: currentQuestion }],
+        parts: [{ text: [currentQuestion] }],
       },
     ]);
     setCurrentQuestion("");

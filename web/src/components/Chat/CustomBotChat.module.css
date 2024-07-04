@@ -10,6 +10,7 @@
 .chats {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   color: var(--primary-color);
   gap: 0.5rem;
